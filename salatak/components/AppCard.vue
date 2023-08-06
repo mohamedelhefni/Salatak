@@ -1,6 +1,6 @@
 <template>
-    <div class="container mx-auto flex flex-col items-center justify-center flex-1 my-10">
-        <div class="card w-11/12 lg:w-6/12 bg-base-200 text-base-content ">
+    <div class="flex flex-col items-center justify-center px-3 w-4/12">
+        <div class="card bg-base-200 text-base-content w-full">
             <div class="card-body ">
                 <slot></slot>
             </div>
