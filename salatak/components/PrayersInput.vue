@@ -21,7 +21,7 @@ console.log("prayers", prayers.value)
             </th>
             <th>{{ $t("Prayer") }}</th>
             <th>{{ $t("Duration") }}</th>
-            <th>{{ $t("Remainder") }}</th>
+            <!-- <th>{{ $t("Remainder") }}</th> -->
           </tr>
         </thead>
         <tbody>
@@ -39,10 +39,10 @@ console.log("prayers", prayers.value)
               <input @input="(e: any) => { setPrayDuration(prayer, e.target.value) }" type="number" class="input w-20"
                 :value="prayer.duration">
             </td>
-            <td>
+            <!-- <td>
               <input @input="(e: any) => { setPrayRemainder(prayer, e.target.value) }" type="number" class="input w-20"
                 :value="prayer.remainder">
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>

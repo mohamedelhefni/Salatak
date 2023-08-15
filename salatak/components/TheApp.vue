@@ -4,7 +4,7 @@ import { usePrayersStore } from '~/stores/prayersStore';
 
 const prayersStore = usePrayersStore()
 const { location, calcMethod, asrMethod, days, timings, prayers } = storeToRefs(prayersStore)
-const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings } = prayersStore
+const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar } = prayersStore
 
 
 const methods = computed(() => {
@@ -20,7 +20,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex items-start justify-between gap-1 w-full h-full px-10 my-10">
+  <div class="flex items-start justify-between gap-1 w-full h-full px-10 my-10 flex-wrap">
     <AppCard>
       <h2 class="card-title">{{ $t("salatak") }}</h2>
       <p>{{ $t("Schedual prayer times on your google calendar now") }}</p>
@@ -59,7 +59,7 @@ onMounted(async () => {
           </select>
         </div>
 
-
+<!--
         <div class="form-control w-full max-w-lg">
           <label class="label">
             <span class="label-text">{{ $t("Days to add to calendar") }}</span>
@@ -68,13 +68,17 @@ onMounted(async () => {
             <option :selected="days == 7" value="7">{{ $t("Week") }}</option>
             <option :selected="days == 30" value="30">{{ $t("Month") }}</option>
           </select>
-        </div>
+        </div> -->
 
         <PrayersInput />
       </div>
 
       <div class="card-actions justify-start">
-        <button class="btn btn-primary mt-3" @click="getPrayersTimings">
+        <button class="btn btn-secondary mt-3" @click="getPrayersTimings">
+          <PhosphorIconEyeglasses size="28" />
+          {{ $t("Preview Calendar") }}
+        </button>
+        <button class="btn btn-primary mt-3" @click="downloadCalendar">
           <PhosphorIconDownload :size="28" />
           {{ $t("Download Calendar") }}
         </button>

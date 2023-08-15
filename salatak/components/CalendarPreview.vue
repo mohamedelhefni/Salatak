@@ -8,6 +8,7 @@ import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { locale, t } = useI18n()
 const { prayers, timings } = storeToRefs(prayersStore)
+const { setEvents } = prayersStore
 
 let calendarOptions = ref({
   plugins: [dayGridPlugin],
@@ -46,8 +47,10 @@ watch(locale, () => {
 })
 
 watch(timings, (state) => {
+  let mappedEvents = mapTimingsToEvents(state)
   //@ts-ignore
-  calendarOptions.value.events = mapTimingsToEvents(state)
+  calendarOptions.value.events = mappedEvents
+  setEvents(mappedEvents)
 })
 
 

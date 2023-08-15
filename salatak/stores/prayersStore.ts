@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { createEvents } from 'ics';
+import { format } from 'date-fns'
 
 interface PrayerCalcMethod {
   id: number
@@ -17,16 +19,26 @@ interface State {
   location: AddressLocaiton
   prayers: any[]
   timings: any[]
+  events: any[]
   calcMethod: number
   calcMethods: PrayerCalcMethod[]
   days: number
   asrMethod: number
 }
 
+const mapEventDateToICSDate = (date: any) => {
+  const inputDate = new Date(date);
+
+  const formattedDate = format(inputDate, 'yyyy-M-d-H-m');
+  const formattedDateArray = formattedDate.split('-').map(d => Number(d));
+  return formattedDateArray
+}
+
 export const usePrayersStore = defineStore('prayers', {
   state: (): State => {
     return {
       location: { address: "" },
+      events: [],
       prayers: [
         {
           checked: true,
@@ -82,6 +94,9 @@ export const usePrayersStore = defineStore('prayers', {
     getPray(name: string) {
       return this.prayers.find(pray => pray.name == name)
     },
+    setEvents(events: any[]) {
+      this.events = events
+    },
     setPrayActive(pray: any, checked: any) {
       let p = this.getPray(pray.name)
       if (!p) return
@@ -101,7 +116,7 @@ export const usePrayersStore = defineStore('prayers', {
       const d = new Date()
       let year = d.getFullYear()
       let month = d.getMonth() + 1 // months starts from 0
-      let resp = await fetch(`https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${this.location.lat}&longitude=${this.location.long}`)
+      let resp = await fetch(`https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${this.location.lat}&longitude=${this.location.long}&method=${this.calcMethod}&school=${this.asrMethod}`)
       let data = await resp.json()
       this.timings = data.data
     },
@@ -122,6 +137,40 @@ export const usePrayersStore = defineStore('prayers', {
         alert("Geolocation is not supported by this browser.")
       }
     },
+    async downloadCalendar() {
+      if (this.events.length <= 0) {
+        await this.getPrayersTimings()
+      }
+      const filename = `SalatkPrayers.ics`
+      const validEvents = this.events.map(event => {
+        event.start = mapEventDateToICSDate(event.start)
+        event.end = mapEventDateToICSDate(event.end)
+        return event
+      })
+      const file = await new Promise((resolve, reject) => {
+
+        createEvents(validEvents, (error, value) => {
+          if (error) {
+            reject(error)
+          }
+
+          resolve(new File([value], filename, { type: 'text/calendar' }))
+        })
+      })
+      //@ts-ignore
+      const url = URL.createObjectURL(file);
+
+      // trying to assign the file URL to a window could cause cross-site
+      // issues so this is a workaround using HTML5
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = filename;
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(url);
+    }
   },
   persist: true,
 })

@@ -22,6 +22,8 @@
   "dependencies": {
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
-    "@fullcalendar/vue3": "^6.1.8"
+    "@fullcalendar/vue3": "^6.1.8",
+    "date-fns": "^2.30.0",
+    "ics": "^3.4.0"
   }
 }
