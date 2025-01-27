@@ -4,7 +4,6 @@ import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { prayers } = storeToRefs(prayersStore)
 const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
-console.log("prayers", prayers.value)
 
 </script>
 
@@ -21,7 +20,6 @@ console.log("prayers", prayers.value)
             </th>
             <th>{{ $t("Prayer") }}</th>
             <th>{{ $t("Duration") }}</th>
-            <!-- <th>{{ $t("Remainder") }}</th> -->
           </tr>
         </thead>
         <tbody>
@@ -39,10 +37,6 @@ console.log("prayers", prayers.value)
               <input @input="(e: any) => { setPrayDuration(prayer, e.target.value) }" type="number" class="input w-20"
                 :value="prayer.duration">
             </td>
-            <!-- <td>
-              <input @input="(e: any) => { setPrayRemainder(prayer, e.target.value) }" type="number" class="input w-20"
-                :value="prayer.remainder">
-            </td> -->
           </tr>
         </tbody>
       </table>
@@ -50,3 +44,9 @@ console.log("prayers", prayers.value)
 
   </div>
 </template>
+
+<style>
+[dir="rtl"] .checkbox:checked {
+  background-image: linear-gradient(-45deg, transparent 65%, hsl(var(--chkbg)) 65.99%), linear-gradient(45deg, transparent 75%, hsl(var(--chkbg)) 75.99%), linear-gradient(-45deg, hsl(var(--chkbg)) 40%, transparent 40.99%), linear-gradient(45deg, hsl(var(--chkbg)) 30%, hsl(var(--chkfg)) 30.99%, hsl(var(--chkfg)) 40%, transparent 40.99%), linear-gradient(-45deg, hsl(var(--chkfg)) 50%, hsl(var(--chkbg)) 50.99%);
+}
+</style>

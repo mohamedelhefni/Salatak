@@ -3,11 +3,12 @@ import { usePrayersStore } from '~/stores/prayersStore';
 
 
 const prayersStore = usePrayersStore()
-const { location, calcMethod, asrMethod, days, timings, prayers } = storeToRefs(prayersStore)
-const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar } = prayersStore
+const { location, calcMethod, asrMethod, days, timings, prayers , loading } = storeToRefs(prayersStore)
+const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading} = prayersStore
 
 
 const methods = computed(() => {
+  setLoading(false)
   return prayersStore.calcMethods
 })
 
@@ -23,9 +24,10 @@ onMounted(async () => {
   <div class="flex items-start justify-between gap-1 w-full h-full px-10 my-10 flex-wrap">
     <AppCard>
       <h2 class="card-title">{{ $t("salatak") }}</h2>
-      <p>{{ $t("Schedual prayer times on your google calendar now") }}</p>
+      <p>{{ $t("schedule_prayers") }}</p>
       <div class="flex flex-col gap-2">
         <div class="form-control w-full max-w-lg">
+          <DatePicker />
           <label class="label">
             <span class="label-text">{{ $t("Address") }}</span>
           </label>
@@ -59,22 +61,14 @@ onMounted(async () => {
           </select>
         </div>
 
-<!--
-        <div class="form-control w-full max-w-lg">
-          <label class="label">
-            <span class="label-text">{{ $t("Days to add to calendar") }}</span>
-          </label>
-          <select @change="(e: any) => setDays(Number(e.target.value))" class="select select-bordered w-full ">
-            <option :selected="days == 7" value="7">{{ $t("Week") }}</option>
-            <option :selected="days == 30" value="30">{{ $t("Month") }}</option>
-          </select>
-        </div> -->
-
         <PrayersInput />
       </div>
 
       <div class="card-actions justify-start">
-        <button class="btn btn-secondary mt-3" @click="getPrayersTimings">
+        <button v-if="loading" class="btn btn-secondary mt-3" >
+          <span class="loading loading-spinner"></span>
+        </button>
+        <button v-else class="btn btn-secondary mt-3" @click="getPrayersTimings">
           <PhosphorIconEyeglasses size="28" />
           {{ $t("Preview Calendar") }}
         </button>
