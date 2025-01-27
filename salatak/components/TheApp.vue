@@ -23,7 +23,7 @@ onMounted(async () => {
   <div class="flex items-start justify-between gap-1 w-full h-full px-10 my-10 flex-wrap">
     <AppCard>
       <h2 class="card-title">{{ $t("salatak") }}</h2>
-      <p>{{ $t("Schedual prayer times on your google calendar now") }}</p>
+      <p>{{ $t("schedule_prayers") }}</p>
       <div class="flex flex-col gap-2">
         <div class="form-control w-full max-w-lg">
           <label class="label">
