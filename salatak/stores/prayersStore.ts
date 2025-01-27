@@ -12,6 +12,7 @@ interface PrayerCalcMethod {
 
 interface State {
   location: AddressLocaiton
+  loading: boolean,
   prayers: any[]
   timings: any[]
   events: any[]
@@ -35,6 +36,7 @@ export const usePrayersStore = defineStore('prayers', {
   state: (): State => {
     return {
       location: { address: "" },
+      loading: false,
       events: [],
       prayers: [
         {
@@ -84,6 +86,10 @@ export const usePrayersStore = defineStore('prayers', {
     setCalcMethod(method: number) {
       this.calcMethod = method
     },
+    setLoading(state: boolean) {
+      this.loading = state
+    }
+    ,
     setDays(days: number) {
       this.days = days
     },
@@ -130,6 +136,10 @@ export const usePrayersStore = defineStore('prayers', {
     async getPrayersTimings() {
       const startDate = new Date(this.startDate)
       const endDate = new Date(this.endDate)
+      if (this.location.lat == undefined || this.location.long == undefined) {
+        alert("you must enter valid address")
+        return
+      }
       const service = new PrayerTimingsService({
         startDate: startDate,
         endDate: endDate,
@@ -137,7 +147,9 @@ export const usePrayersStore = defineStore('prayers', {
         calcMethod: this.calcMethod,
         asrMethod: this.asrMethod
       })
+      this.loading = true
       await service.getPrayersTimings()
+      this.loading = false
       this.timings = service.timings
     },
     async reverseGeocoding() {
@@ -148,7 +160,6 @@ export const usePrayersStore = defineStore('prayers', {
     async getLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log("position is", position)
           this.location.lat = position.coords.latitude
           this.location.long = position.coords.longitude
           this.reverseGeocoding()

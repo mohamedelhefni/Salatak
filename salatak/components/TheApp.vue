@@ -3,11 +3,12 @@ import { usePrayersStore } from '~/stores/prayersStore';
 
 
 const prayersStore = usePrayersStore()
-const { location, calcMethod, asrMethod, days, timings, prayers } = storeToRefs(prayersStore)
-const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar } = prayersStore
+const { location, calcMethod, asrMethod, days, timings, prayers , loading } = storeToRefs(prayersStore)
+const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading} = prayersStore
 
 
 const methods = computed(() => {
+  setLoading(false)
   return prayersStore.calcMethods
 })
 
@@ -64,7 +65,10 @@ onMounted(async () => {
       </div>
 
       <div class="card-actions justify-start">
-        <button class="btn btn-secondary mt-3" @click="getPrayersTimings">
+        <button v-if="loading" class="btn btn-secondary mt-3" >
+          <span class="loading loading-spinner"></span>
+        </button>
+        <button v-else class="btn btn-secondary mt-3" @click="getPrayersTimings">
           <PhosphorIconEyeglasses size="28" />
           {{ $t("Preview Calendar") }}
         </button>

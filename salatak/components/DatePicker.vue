@@ -1,11 +1,11 @@
 <template>
-    <div>
-        <div>
-            <label for="start-date">Start Date:</label>
+    <div class="flex items-center justify-start flex-wrap">
+        <div class="flex items-center justify-between w-full ">
+            <label for="start-date"> {{ $t("start_date") }} </label>
             <input type="month" id="start-date" :value="startDateInput" @change="updateStartDate" />
         </div>
-        <div>
-            <label for="end-date">End Date:</label>
+        <div class="flex items-center justify-between w-full">
+            <label for="end-date"> {{ $t("end_date")  }} </label>
             <input type="month" id="end-date" :value="endDateInput" @change="updateEndDate" />
         </div>
     </div>
@@ -27,7 +27,6 @@ const updateStartDate = (event) => {
     setStartDate(date);
 };
 
-// Update end date in the store
 const updateEndDate = (event) => {
     const date = new Date(event.target.value + "-01"); // Add "-01" to make it a valid date
     let sd = new Date(startDate.value)

@@ -49,7 +49,6 @@ export class PrayerTimingsService {
   private async processYearData(year: number, startDate: Date, endDate: Date): Promise<any[]> {
     const [startMonth, endMonth] = this.getMonthRange(startDate, endDate, year);
     const monthDiff = endMonth - startMonth;
-
     // If difference is more than one month, fetch entire year
     if (monthDiff > 1) {
       const yearData = await this.fetchPrayerData(year);
@@ -58,7 +57,6 @@ export class PrayerTimingsService {
         (_, i) => yearData.data[String(startMonth + i)]
       );
     }
-
     // Otherwise fetch individual months
     const monthsData = [];
     for (let month = startMonth; month <= endMonth; month++) {
@@ -75,16 +73,10 @@ export class PrayerTimingsService {
       { length: endYear - startYear + 1 },
       (_, i) => startYear + i
     );
-
-    // Fetch data for all years concurrently
     const yearPromises = years.map(year => 
       this.processYearData(year, this.startDate, this.endDate)
     );
-
-    // Wait for all requests to complete
     const yearResults = await Promise.all(yearPromises);
-    
-    // Flatten the results into a single array
     this.timings = yearResults.flat();
   }
 }

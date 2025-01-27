@@ -20,7 +20,6 @@ const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
             </th>
             <th>{{ $t("Prayer") }}</th>
             <th>{{ $t("Duration") }}</th>
-            <!-- <th>{{ $t("Remainder") }}</th> -->
           </tr>
         </thead>
         <tbody>
@@ -38,10 +37,6 @@ const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
               <input @input="(e: any) => { setPrayDuration(prayer, e.target.value) }" type="number" class="input w-20"
                 :value="prayer.duration">
             </td>
-            <!-- <td>
-              <input @input="(e: any) => { setPrayRemainder(prayer, e.target.value) }" type="number" class="input w-20"
-                :value="prayer.remainder">
-            </td> -->
           </tr>
         </tbody>
       </table>
