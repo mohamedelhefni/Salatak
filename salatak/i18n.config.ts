@@ -5,6 +5,7 @@ export default defineI18nConfig(() => ({
     en: {
       "welcome": "Welcome",
       "salatak": "Salatak",
+      "Jummuah": "Jummuah",
       "Fajr": "Fajr",
       "Dhuhr": "Dhuhr",
       "Asr": "Asr",
@@ -52,6 +53,7 @@ export default defineI18nConfig(() => ({
       "welcome": "اهلا",
       "schedule_prayers": "قم بجدولة مواعيد الصلاه الان ! ",
       "salatak": "صلاتك",
+      "Jummuah": "الجمعه",
       "Fajr": "الفجر",
       "Dhuhr": "الضهر",
       "Asr": "العصر",

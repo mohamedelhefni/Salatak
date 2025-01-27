@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { createEvents } from 'ics';
 import { format } from 'date-fns'
+import { AddressLocaiton, PrayerTimingsService } from '~/services/PrayerTimeingsService';
 
 interface PrayerCalcMethod {
   id: number
@@ -8,18 +9,14 @@ interface PrayerCalcMethod {
 }
 
 
-interface AddressLocaiton {
-  address: string
-  lat?: number
-  long?: number
-}
-
 
 interface State {
   location: AddressLocaiton
   prayers: any[]
   timings: any[]
   events: any[]
+  startDate: Date
+  endDate: Date
   calcMethod: number
   calcMethods: PrayerCalcMethod[]
   days: number
@@ -69,6 +66,8 @@ export const usePrayersStore = defineStore('prayers', {
         },
       ],
       timings: [],
+      startDate: new Date(),
+      endDate: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 days from now
       calcMethod: 5, // 5 -> egyption calc method
       calcMethods: [],
       days: 7,
@@ -112,13 +111,34 @@ export const usePrayersStore = defineStore('prayers', {
       if (!p) return
       p.remainder = duration
     },
+    setStartDate(date: any) {
+      const d = new Date(date);
+      if (isNaN(d.getTime())) {
+        alert("Invalid start date");
+        return;
+      }
+      this.startDate = d;
+    },
+    setEndDate(date: any) {
+      const d = new Date(date);
+      if (isNaN(d.getTime())) {
+        alert("Invalid end date");
+        return;
+      }
+      this.endDate = d;
+    },
     async getPrayersTimings() {
-      const d = new Date()
-      let year = d.getFullYear()
-      let month = d.getMonth() + 1 // months starts from 0
-      let resp = await fetch(`https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${this.location.lat}&longitude=${this.location.long}&method=${this.calcMethod}&school=${this.asrMethod}`)
-      let data = await resp.json()
-      this.timings = data.data
+      const startDate = new Date(this.startDate)
+      const endDate = new Date(this.endDate)
+      const service = new PrayerTimingsService({
+        startDate: startDate,
+        endDate: endDate,
+        location: this.location,
+        calcMethod: this.calcMethod,
+        asrMethod: this.asrMethod
+      })
+      await service.getPrayersTimings()
+      this.timings = service.timings
     },
     async reverseGeocoding() {
       let resp = await fetch(`https://geocode.maps.co/reverse?lat=${this.location.lat}&lon=${this.location.long}`)

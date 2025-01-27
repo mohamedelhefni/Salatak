@@ -4,7 +4,6 @@ import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { prayers } = storeToRefs(prayersStore)
 const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
-console.log("prayers", prayers.value)
 
 </script>
 

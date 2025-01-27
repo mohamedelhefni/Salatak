@@ -26,6 +26,7 @@ onMounted(async () => {
       <p>{{ $t("schedule_prayers") }}</p>
       <div class="flex flex-col gap-2">
         <div class="form-control w-full max-w-lg">
+          <DatePicker />
           <label class="label">
             <span class="label-text">{{ $t("Address") }}</span>
           </label>
@@ -58,17 +59,6 @@ onMounted(async () => {
             <option :selected="asrMethod == 1" value="1">{{ $t("Hanafi") }}</option>
           </select>
         </div>
-
-<!--
-        <div class="form-control w-full max-w-lg">
-          <label class="label">
-            <span class="label-text">{{ $t("Days to add to calendar") }}</span>
-          </label>
-          <select @change="(e: any) => setDays(Number(e.target.value))" class="select select-bordered w-full ">
-            <option :selected="days == 7" value="7">{{ $t("Week") }}</option>
-            <option :selected="days == 30" value="30">{{ $t("Month") }}</option>
-          </select>
-        </div> -->
 
         <PrayersInput />
       </div>
