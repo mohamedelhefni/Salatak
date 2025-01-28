@@ -149,7 +149,7 @@ export const usePrayersStore = defineStore('prayers', {
       this.loading = true
       await service.getPrayersTimings()
       this.loading = false
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&duration=30&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}`
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&duration=30&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`
       this.timings = service.timings
     },
     async reverseGeocoding() {

@@ -40,7 +40,8 @@ export default defineEventHandler(async (event) => {
             calcMethod = '2',
             asrMethod = '1',
             alarm = '0',
-            duration = '25'
+            duration = '25',
+            timezone = 'timezone'
         } = query;
 
         if (!startDate || !endDate || !lat || !long) {
@@ -63,6 +64,7 @@ export default defineEventHandler(async (event) => {
         await prayerService.getPrayersTimings();
         const calendar = ical({
             name: 'Prayer Times',
+            timezone: String(timezone),
         });
         const allowedEvents = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         for (const dayData of prayerService.timings) {
