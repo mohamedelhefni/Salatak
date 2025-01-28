@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import enLocales from "@fullcalendar/core/locales/en-gb"
@@ -7,20 +6,19 @@ import arLocales from "@fullcalendar/core/locales/ar"
 import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { locale, t } = useI18n()
-const { prayers, timings } = storeToRefs(prayersStore)
+const { subscribeURL, timings } = storeToRefs(prayersStore)
 const { setEvents, mapTimingsToEvents } = prayersStore
+const { $toast } = useNuxtApp()
 
 let calendarOptions = ref({
   plugins: [dayGridPlugin],
   locales: [enLocales, arLocales],
   locale: locale.value || "en",
   initialView: 'dayGridMonth',
+  height: 'auto',
+  expandRows: true,
   events: []
 })
-
-
-
-
 
 
 watch(locale, () => {
@@ -35,15 +33,48 @@ watch(timings, (state) => {
 })
 
 
+const copyToClipboard = () => {
+  if (navigator.clipboard) {
+    navigator.clipboard
+      .writeText(subscribeURL.value)
+      .then(() => {
+        $toast.show(t('text_copied_to_clipboard'), 'info');
+      })
+      .catch((error) => {
+        $toast.show(t('failed_to_copy'), 'error');
+        console.error('Failed to copy:', error);
+      });
+  } else {
+    const textArea = document.createElement('textarea');
+    textArea.value = subscribeURL.value;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      $toast.show(t('text_copied_to_clipboard'), 'info');
+    } catch (error) {
+      $toast.show(t('failed_to_copy'), 'error');
+      console.error('Fallback copy failed:', error);
+    }
+    document.body.removeChild(textArea);
+  }
+}
 
 </script>
 
 
 <template>
-  <div class="flex flex-col gap-3 mt-4 flex-1 h-full">
-    <h3 class="font-bold text-xl">{{ $t("Preview") }}</h3>
-    <div class="p-5 bg-white rounded">
+  <div class="col-span-2 self-start">
+    <div class="indicator w-full " v-if="subscribeURL != ''">
+      <span class="indicator-item badge badge-primary py-3 rounded top-3 right-3 cursor-pointer"
+        @click="copyToClipboard">
+        <IconsClipboard class="w-5 h-5" />
+      </span>
+      <div class="p-3 bg-base-200 my-2 rounded-lg truncate"> {{ subscribeURL }} </div>
+    </div>
+    <div class="bg-white p-5 rounded-lg">
       <FullCalendar :options="calendarOptions" />
     </div>
+
   </div>
 </template>

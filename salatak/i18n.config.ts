@@ -50,6 +50,7 @@ export default defineI18nConfig(() => ({
       "Download Calendar": "Download Calendar",
       "Preview": "Preview",
       "schedule_prayers": "Schedule your prayers on any calendar now!",
+      "text_copied_to_clipboard": "Url Copied",
     },
     ar: {
       "welcome": "اهلا",
@@ -98,7 +99,8 @@ export default defineI18nConfig(() => ({
       "Duration": "المدة",
       "Preview Calendar": "معاينة التقويم",
       "Download Calendar": "تحميل التقويم",
-      "Preview": "معاينة"
+      "Preview": "معاينة",
+      "text_copied_to_clipboard": "تم نسخ العنوان بنجاح"
     }
   }
 }))

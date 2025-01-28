@@ -16,16 +16,15 @@
     "@pinia/nuxt": "^0.4.11",
     "@types/node": "^18.17.1",
     "daisyui": "^3.5.0",
-    "nuxt": "^3.6.5",
-    "nuxt-phosphor-icons": "^1.0.6"
+    "nuxt": "^3.6.5"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/vue3": "^6.1.8",
+    "@vercel/analytics": "^1.4.1",
     "date-fns": "^2.30.0",
     "ical-generator": "^8.1.1",
-    "ics": "^3.4.0",
-    "moment": "^2.30.1"
+    "ics": "^3.4.0"
   }
 }

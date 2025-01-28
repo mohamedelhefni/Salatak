@@ -8,11 +8,10 @@ interface PrayerCalcMethod {
   name: string
 }
 
-
-
 interface State {
   location: AddressLocaiton
-  loading: boolean,
+  loading: boolean
+  subscribeURL: string
   prayers: any[]
   timings: any[]
   events: any[]
@@ -26,7 +25,6 @@ interface State {
 
 const mapEventDateToICSDate = (date: any) => {
   const inputDate = new Date(date);
-
   const formattedDate = format(inputDate, 'yyyy-M-d-H-m');
   const formattedDateArray = formattedDate.split('-').map(d => Number(d));
   return formattedDateArray
@@ -37,6 +35,7 @@ export const usePrayersStore = defineStore('prayers', {
     return {
       location: { address: "" },
       loading: false,
+      subscribeURL: "",
       events: [],
       prayers: [
         {
@@ -150,6 +149,7 @@ export const usePrayersStore = defineStore('prayers', {
       this.loading = true
       await service.getPrayersTimings()
       this.loading = false
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&duration=30&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
