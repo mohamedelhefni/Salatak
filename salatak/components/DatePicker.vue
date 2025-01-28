@@ -1,16 +1,3 @@
-<template>
-    <div class="flex items-center justify-start flex-wrap">
-        <div class="flex items-center justify-between w-full ">
-            <label for="start-date"> {{ $t("start_date") }} </label>
-            <input type="month" id="start-date" :value="startDateInput" @change="updateStartDate" />
-        </div>
-        <div class="flex items-center justify-between w-full">
-            <label for="end-date"> {{ $t("end_date")  }} </label>
-            <input type="month" id="end-date" :value="endDateInput" @change="updateEndDate" />
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { usePrayersStore } from '~/stores/prayersStore';
 import { storeToRefs } from 'pinia';
@@ -39,18 +26,19 @@ const updateEndDate = (event: any) => {
 };
 </script>
 
-<style scoped>
-div {
-    margin-bottom: 1rem;
-}
-
-label {
-    margin-right: 0.5rem;
-}
-
-input[type="month"] {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-</style>
+<template>
+    <div class="flex items-center justify-start flex-wrap  gap-4">
+        <div class="form-control w-full max-w-lg">
+            <label for="start-date" class="label">
+                <span class="label-text"> {{ $t("start_date") }} </span>
+            </label>
+            <input type="month" class="input" id="start-date" :value="startDateInput" @change="updateStartDate" />
+        </div>
+        <div class="form-control w-full max-w-lg">
+            <label for="end-date" class="label">
+                <span class="label-text"> {{ $t("end_date")  }} </span>
+            </label>
+            <input type="month" class="input" id="end-date" :value="endDateInput" @change="updateEndDate" />
+        </div>
+    </div>
+</template>

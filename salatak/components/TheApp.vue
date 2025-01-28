@@ -1,32 +1,25 @@
 <script setup lang="ts">
 import { usePrayersStore } from '~/stores/prayersStore';
-
-
 const prayersStore = usePrayersStore()
-const { location, calcMethod, asrMethod, days, timings, prayers , loading } = storeToRefs(prayersStore)
-const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading} = prayersStore
-
-
+const { location, calcMethod, asrMethod, loading } = storeToRefs(prayersStore)
+const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading } = prayersStore
 const methods = computed(() => {
   setLoading(false)
   return prayersStore.calcMethods
 })
-
 onMounted(async () => {
   prayersStore.fetchPrayerCalcMethods()
 })
-
-
 </script>
 
 <template>
-  <div class="flex items-start justify-between gap-1 w-full h-full px-10 my-10 flex-wrap">
-    <AppCard>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-1 w-full h-full px-10 my-10 ">
+    <AppCard class="self-start">
       <h2 class="card-title">{{ $t("salatak") }}</h2>
       <p>{{ $t("schedule_prayers") }}</p>
       <div class="flex flex-col gap-2">
+        <DatePicker />
         <div class="form-control w-full max-w-lg">
-          <DatePicker />
           <label class="label">
             <span class="label-text">{{ $t("Address") }}</span>
           </label>
@@ -63,14 +56,14 @@ onMounted(async () => {
       </div>
 
       <div class="card-actions justify-start">
-        <button v-if="loading" class="btn btn-secondary mt-3" >
+        <button v-if="loading" class="btn btn-sm btn-secondary mt-3">
           <span class="loading loading-spinner"></span>
         </button>
-        <button v-else class="btn btn-secondary mt-3" @click="getPrayersTimings">
+        <button v-else class="btn btn-secondary btn-sm mt-3" @click="getPrayersTimings">
           <IconsEye class="w-6 h-6" />
           {{ $t("Preview Calendar") }}
         </button>
-        <button class="btn btn-primary  mt-3" @click="downloadCalendar">
+        <button class="btn btn-primary btn-sm  mt-3" @click="downloadCalendar">
           <IconsDownload class="w-5 h-5" />
           {{ $t("Download Calendar") }}
         </button>
@@ -78,4 +71,5 @@ onMounted(async () => {
     </AppCard>
     <CalendarPreview />
   </div>
+  <Toast />
 </template>
