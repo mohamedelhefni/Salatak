@@ -34,7 +34,7 @@ onMounted(async () => {
             <input type="text" :placeholder="$t('Address')" :value="location.address"
               class=" input input-bordered w-full" />
             <button @click="prayersStore.getLocation()" class="btn btn-primary btn-square">
-              <PhosphorIconMapPin :size="28" />
+              <IconsMapPin class="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -59,7 +59,6 @@ onMounted(async () => {
             <option :selected="asrMethod == 1" value="1">{{ $t("Hanafi") }}</option>
           </select>
         </div>
-
         <PrayersInput />
       </div>
 
@@ -68,17 +67,15 @@ onMounted(async () => {
           <span class="loading loading-spinner"></span>
         </button>
         <button v-else class="btn btn-secondary mt-3" @click="getPrayersTimings">
-          <PhosphorIconEyeglasses size="28" />
+          <IconsEye class="w-6 h-6" />
           {{ $t("Preview Calendar") }}
         </button>
-        <button class="btn btn-primary mt-3" @click="downloadCalendar">
-          <PhosphorIconDownload :size="28" />
+        <button class="btn btn-primary  mt-3" @click="downloadCalendar">
+          <IconsDownload class="w-5 h-5" />
           {{ $t("Download Calendar") }}
         </button>
       </div>
     </AppCard>
-
     <CalendarPreview />
-
   </div>
 </template>

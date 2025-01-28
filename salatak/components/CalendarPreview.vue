@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import enLocales from "@fullcalendar/core/locales/en-gb"
@@ -15,12 +14,10 @@ let calendarOptions = ref({
   locales: [enLocales, arLocales],
   locale: locale.value || "en",
   initialView: 'dayGridMonth',
+  height: 'auto',
+  expandRows: true,
   events: []
 })
-
-
-
-
 
 
 watch(locale, () => {
@@ -34,16 +31,13 @@ watch(timings, (state) => {
   setEvents(mappedEvents)
 })
 
-
-
 </script>
 
 
 <template>
-  <div class="flex flex-col gap-3 mt-4 flex-1 h-full">
-    <h3 class="font-bold text-xl">{{ $t("Preview") }}</h3>
-    <div class="p-5 bg-white rounded">
-      <FullCalendar :options="calendarOptions" />
+  <div class="self-stretch flex-1">
+    <div class="bg-white p-5 bg-white rounded-lg">
+      <FullCalendar :options="calendarOptions"/>
     </div>
   </div>
 </template>

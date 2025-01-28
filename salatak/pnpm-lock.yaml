@@ -26,9 +26,6 @@ importers:
       ics:
         specifier: ^3.4.0
         version: 3.4.0
-      moment:
-        specifier: ^2.30.1
-        version: 2.30.1
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
@@ -54,9 +51,6 @@ importers:
       nuxt:
         specifier: ^3.6.5
         version: 3.6.5(@types/node@18.17.1)(encoding@0.1.13)(rollup@3.27.0)(terser@5.19.2)
-      nuxt-phosphor-icons:
-        specifier: ^1.0.6
-        version: 1.0.6(rollup@3.27.0)(vue@3.3.4)
 
 packages:
 
@@ -764,12 +758,6 @@ packages:
 
   '@nuxtjs/tailwindcss@6.8.0':
     resolution: {integrity: sha512-jzuvD1nfA2BPnSbHtKK0aiI51ndMa7lNGL1iDEFuEPsltzilZ9ED7zOP6niGTrImg0n5Yt4GEJpixi6yWwp9Hw==}
-
-  '@phosphor-icons/vue@2.1.6':
-    resolution: {integrity: sha512-j4iVvNT4JbDR2udIVfakKZHd14i3jCvO4b24OC0W/1rasftU8qVg1Tnb3QDwAT0teNU+UxvaM+kCWxfGHC2dUg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      vue: '>=3.2.39'
 
   '@pinia-plugin-persistedstate/nuxt@1.1.1':
     resolution: {integrity: sha512-b6ZNP3Re8COmfZEpj4KQmbp2TuDKrLggDFLZa8FiJF68xE/oCsPXIuXUvAt8E4ht/5sq4Z/grlA+iGXaI2aeKQ==}
@@ -2926,9 +2914,6 @@ packages:
     resolution: {integrity: sha512-4XEXYz71UiWWiKC1/cJCzqRSUEImYRmjcvKpSsBKMU58ALYVSx5KIoas5SwLO8tEKO5BS4DAe4u7MYix7hfuHQ==}
     engines: {node: ^14.18.0 || >=16.10.0}
     hasBin: true
-
-  nuxt-phosphor-icons@1.0.6:
-    resolution: {integrity: sha512-JQssLsBJeOAJQWvu3OEZZxNfaa4NtBpk5RsCqinur8tScc9f/fPeJ/CJD3KgOBnK4AZ7bx2/pdd9vi+HmzZ1CQ==}
 
   nuxt@3.6.5:
     resolution: {integrity: sha512-0A7V8B1HrIXX9IlqPc2w+5ZPXi+7MYa9QVhtuGYuLvjRKoSFANhCoMPRP6pKdoxigM1MBxhLue2VmHA/VbtJCw==}
@@ -5188,10 +5173,6 @@ snapshots:
       - ts-node
       - webpack
 
-  '@phosphor-icons/vue@2.1.6(vue@3.3.4)':
-    dependencies:
-      vue: 3.3.4
-
   '@pinia-plugin-persistedstate/nuxt@1.1.1(@pinia/nuxt@0.4.11(rollup@3.27.0)(vue@3.3.4))(pinia@2.1.6(vue@3.3.4))(rollup@3.27.0)':
     dependencies:
       '@nuxt/kit': 3.6.5(rollup@3.27.0)
@@ -7382,7 +7363,8 @@ snapshots:
       pkg-types: 1.0.3
       ufo: 1.2.0
 
-  moment@2.30.1: {}
+  moment@2.30.1:
+    optional: true
 
   mri@1.2.0: {}
 
@@ -7614,15 +7596,6 @@ snapshots:
   nuxi@3.6.5:
     optionalDependencies:
       fsevents: 2.3.2
-
-  nuxt-phosphor-icons@1.0.6(rollup@3.27.0)(vue@3.3.4):
-    dependencies:
-      '@nuxt/kit': 3.6.5(rollup@3.27.0)
-      '@phosphor-icons/vue': 2.1.6(vue@3.3.4)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-      - vue
 
   nuxt@3.6.5(@types/node@18.17.1)(encoding@0.1.13)(rollup@3.27.0)(terser@5.19.2):
     dependencies:
