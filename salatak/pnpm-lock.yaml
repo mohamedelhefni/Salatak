@@ -17,6 +17,9 @@ importers:
       '@fullcalendar/vue3':
         specifier: ^6.1.8
         version: 6.1.8(@fullcalendar/core@6.1.8)(vue@3.3.4)
+      '@vercel/analytics':
+        specifier: ^1.4.1
+        version: 1.4.1(vue-router@4.2.4(vue@3.3.4))(vue@3.3.4)
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
@@ -936,6 +939,32 @@ packages:
     resolution: {integrity: sha512-cbq2k8RII9gDzpGC+CMaPezid6k8b8mV2KxhrtidnsHfK/ZmEaChrVCQ06C9xTtHMHfnNbCUn9vvQh96dHHF9A==}
     peerDependencies:
       vue: '>=2.7 || >=3'
+
+  '@vercel/analytics@1.4.1':
+    resolution: {integrity: sha512-ekpL4ReX2TH3LnrRZTUKjHHNpNy9S1I7QmS+g/RQXoSUQ8ienzosuX7T9djZ/s8zPhBx1mpHP/Rw5875N+zQIQ==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vercel/nft@0.22.6':
     resolution: {integrity: sha512-gTsFnnT4mGxodr4AUlW3/urY+8JKKB452LwF3m477RFUJTAaDmcz2JqFuInzvdybYIeyIv1sSONEJxsxnbQ5JQ==}
@@ -5356,6 +5385,11 @@ snapshots:
       hookable: 5.5.3
       unhead: 1.1.33
       vue: 3.3.4
+
+  '@vercel/analytics@1.4.1(vue-router@4.2.4(vue@3.3.4))(vue@3.3.4)':
+    optionalDependencies:
+      vue: 3.3.4
+      vue-router: 4.2.4(vue@3.3.4)
 
   '@vercel/nft@0.22.6(encoding@0.1.13)':
     dependencies:
