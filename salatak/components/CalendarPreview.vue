@@ -8,7 +8,7 @@ import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { locale, t } = useI18n()
 const { prayers, timings } = storeToRefs(prayersStore)
-const { setEvents } = prayersStore
+const { setEvents, mapTimingsToEvents } = prayersStore
 
 let calendarOptions = ref({
   plugins: [dayGridPlugin],
@@ -19,30 +19,7 @@ let calendarOptions = ref({
 })
 
 
-const mapTimingsToEvents = (months: any[]): any[] => {
-  const events: any[] = []
-  const PRAY_TIME_BUFFER = 30
-  const JUMMAH_TIME_BUFFER = 60
-  console.log("timings ", timings)
-  months.forEach(month => {
-    month.forEach(day => {
-      Object.entries(day.timings).map(t => ({ name: t[0], date: t[1] })).forEach(pray => {
-        let allowedPrays = prayers.value.filter(p => p.checked).map(p => p.name)
-        if (!allowedPrays.includes(pray.name)) return
-        let dayName = day.date.gregorian.weekday.en
-        let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : PRAY_TIME_BUFFER
-        let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
-        let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
-        let prayDateEnd = new Date(prayDateStart)
-        prayDateEnd.setMinutes(prayDateStart.getMinutes() + bufferTime)
-        events.push({ title: `🕋 ${t(prayName)}`, start: prayDateStart, end: prayDateEnd })
-      })
 
-    })
-
-  })
-  return events
-}
 
 
 
@@ -51,7 +28,7 @@ watch(locale, () => {
 })
 
 watch(timings, (state) => {
-  let mappedEvents = mapTimingsToEvents(state)
+  let mappedEvents = mapTimingsToEvents(state, t)
   //@ts-ignore
   calendarOptions.value.events = mappedEvents
   setEvents(mappedEvents)

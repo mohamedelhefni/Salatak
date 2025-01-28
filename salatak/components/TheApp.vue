@@ -12,7 +12,6 @@ const methods = computed(() => {
   return prayersStore.calcMethods
 })
 
-
 onMounted(async () => {
   prayersStore.fetchPrayerCalcMethods()
 })

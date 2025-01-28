@@ -24,6 +24,8 @@
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/vue3": "^6.1.8",
     "date-fns": "^2.30.0",
-    "ics": "^3.4.0"
+    "ical-generator": "^8.1.1",
+    "ics": "^3.4.0",
+    "moment": "^2.30.1"
   }
 }
