@@ -22,12 +22,12 @@ const { setStartDate, setEndDate } = prayersStore;
 const startDateInput = computed(() => new Date(startDate.value).toISOString().slice(0, 7));
 const endDateInput = computed(() => new Date(endDate.value).toISOString().slice(0, 7));
 
-const updateStartDate = (event) => {
+const updateStartDate = (event: any) => {
     const date = new Date(event.target.value + "-01"); // Add "-01" to make it a valid date
     setStartDate(date);
 };
 
-const updateEndDate = (event) => {
+const updateEndDate = (event: any) => {
     const date = new Date(event.target.value + "-01"); // Add "-01" to make it a valid date
     let sd = new Date(startDate.value)
     if (date < sd) {
