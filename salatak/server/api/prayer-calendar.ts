@@ -41,7 +41,12 @@ export default defineEventHandler(async (event) => {
             asrMethod = '1',
             alarm = '0',
             duration = '25',
-            timezone = 'timezone'
+            timezone = 'timezone',
+            fajrDuration = duration,
+            dhuhrDuration = duration,
+            asrDuration = duration,
+            maghribDuration = duration,
+            ishaDuration = duration
         } = query;
 
         if (!startDate || !endDate || !lat || !long) {
@@ -67,9 +72,24 @@ export default defineEventHandler(async (event) => {
             timezone: String(timezone),
         });
         const allowedEvents = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        
+        // Map of prayer names to their durations
+        const prayerDurations = {
+            'Fajr': Number(fajrDuration),
+            'Dhuhr': Number(dhuhrDuration),
+            'Asr': Number(asrDuration),
+            'Maghrib': Number(maghribDuration),
+            'Isha': Number(ishaDuration)
+        };
+        
+        // Special case for Jummah
+        const JUMMAH_DURATION = 60;
+        
         for (const dayData of prayerService.timings) {
             for (const day of dayData) {
                 const dateStr = day.date.gregorian.date;
+                const dayName = day.date.gregorian.weekday.en;
+                
                 for (const [name, timeStr] of Object.entries(day.timings)) {
                     if (!allowedEvents.includes(name)) {
                         continue;
@@ -80,18 +100,26 @@ export default defineEventHandler(async (event) => {
                             console.error(`Invalid date created for ${name} on ${dateStr} at ${timeStr}`);
                             continue;
                         }
-                        const durationMinutes = name === 'Sunrise'
-                            ? 10
-                            : name === 'Midnight'
-                                ? 1
-                                : Number(duration);
+                        
+                        // Determine the duration based on prayer name and day
+                        let prayerDuration;
+                        if (name === 'Dhuhr' && dayName === 'Friday') {
+                            prayerDuration = JUMMAH_DURATION;
+                        } else {
+                            prayerDuration = prayerDurations[name];
+                        }
+                        
                         const endDate = new Date(startDate);
-                        endDate.setMinutes(endDate.getMinutes() + durationMinutes);
+                        endDate.setMinutes(endDate.getMinutes() + prayerDuration);
+                        
+                        // Determine prayer name (change Dhuhr to Jummah on Friday)
+                        const displayName = (name === 'Dhuhr' && dayName === 'Friday') ? 'Jummuah' : name;
+                        
                         const event = calendar.createEvent({
                             start: startDate,
                             end: endDate,
-                            summary: `🕋 ${name}`,
-                            description: `Prayer time for ${name}`,
+                            summary: `🕋 ${displayName}`,
+                            description: `Prayer time for ${displayName}`,
                         });
                         if (Number(alarm) > 0) {
                             event.createAlarm({
