@@ -149,7 +149,14 @@ export const usePrayersStore = defineStore('prayers', {
       this.loading = true
       await service.getPrayersTimings()
       this.loading = false
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&duration=30&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`
+      
+      // Create a mapping of prayer durations
+      const durationParams = this.prayers
+        .filter(p => p.checked)
+        .map(p => `${p.name.toLowerCase()}Duration=${p.duration}`)
+        .join('&')
+      
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
@@ -204,15 +211,15 @@ export const usePrayersStore = defineStore('prayers', {
     },
     mapTimingsToEvents(months: any[], t: any) {
       const events: any[] = []
-      const PRAY_TIME_BUFFER = 30
       const JUMMAH_TIME_BUFFER = 60
       months.forEach((month: any) => {
         month.forEach((day: any) => {
           Object.entries(day.timings).map(t => ({ name: t[0], date: t[1] })).forEach(pray => {
-            let allowedPrays = this.prayers.filter(p => p.checked).map(p => p.name)
-            if (!allowedPrays.includes(pray.name)) return
+            let prayerConfig = this.prayers.find(p => p.name === pray.name)
+            if (!prayerConfig || !prayerConfig.checked) return
+            
             let dayName = day.date.gregorian.weekday.en
-            let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : PRAY_TIME_BUFFER
+            let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : prayerConfig.duration
             let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
             let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
             let prayDateEnd = new Date(prayDateStart)
