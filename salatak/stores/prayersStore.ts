@@ -109,12 +109,44 @@ export const usePrayersStore = defineStore('prayers', {
     setPrayDuration(pray: any, duration: any) {
       let p = this.getPray(pray.name)
       if (!p) return
-      p.duration = duration
+      
+      // Convert to number and validate
+      const numDuration = Number(duration)
+      if (isNaN(numDuration) || numDuration < 0) {
+        console.warn(`Invalid duration value: ${duration}. Using default value of 10.`)
+        p.duration = 10
+        return
+      }
+      
+      // Ensure reasonable limits (max 180 minutes = 3 hours)
+      if (numDuration > 180) {
+        console.warn(`Duration too large: ${numDuration}. Setting to maximum of 180 minutes.`)
+        p.duration = 180
+        return
+      }
+      
+      p.duration = numDuration
     },
     setPrayRemainder(pray: any, duration: any) {
       let p = this.getPray(pray.name)
       if (!p) return
-      p.remainder = duration
+      
+      // Convert to number and validate
+      const numRemainder = Number(duration)
+      if (isNaN(numRemainder) || numRemainder < 0) {
+        console.warn(`Invalid remainder value: ${duration}. Using default value of 15.`)
+        p.remainder = 15
+        return
+      }
+      
+      // Ensure reasonable limits (max 60 minutes for reminder)
+      if (numRemainder > 60) {
+        console.warn(`Remainder too large: ${numRemainder}. Setting to maximum of 60 minutes.`)
+        p.remainder = 60
+        return
+      }
+      
+      p.remainder = numRemainder
     },
     setStartDate(date: any) {
       const d = new Date(date);
@@ -219,7 +251,7 @@ export const usePrayersStore = defineStore('prayers', {
             if (!prayerConfig || !prayerConfig.checked) return
             
             let dayName = day.date.gregorian.weekday.en
-            let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : prayerConfig.duration
+            let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : Number(prayerConfig.duration)
             let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
             let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
             let prayDateEnd = new Date(prayDateStart)
