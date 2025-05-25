@@ -5,6 +5,18 @@ const prayersStore = usePrayersStore()
 const { prayers } = storeToRefs(prayersStore)
 const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
 
+// Handle duration input with validation
+const handleDurationInput = (prayer: any, event: any) => {
+  const value = event.target.value
+  setPrayDuration(prayer, value)
+  
+  // Update the input value to reflect any corrections made by the store
+  const updatedPrayer = prayersStore.getPray(prayer.name)
+  if (updatedPrayer && updatedPrayer.duration !== Number(value)) {
+    event.target.value = updatedPrayer.duration
+  }
+}
+
 </script>
 
 
@@ -19,7 +31,7 @@ const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
             <th>
             </th>
             <th>{{ $t("Prayer") }}</th>
-            <th>{{ $t("Duration") }}</th>
+            <th>{{ $t("Duration") }} ({{ $t("minutes") }})</th>
           </tr>
         </thead>
         <tbody>
@@ -34,8 +46,17 @@ const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
               {{ $t(prayer.name) }}
             </td>
             <td>
-              <input @input="(e: any) => { setPrayDuration(prayer, e.target.value) }" type="number" class="input w-20"
-                :value="prayer.duration">
+              <input 
+                @input="(e: any) => handleDurationInput(prayer, e)" 
+                type="number" 
+                class="input w-20"
+                :value="prayer.duration"
+                min="1"
+                max="180"
+                step="1"
+                :placeholder="$t('minutes')"
+                title="Duration in minutes (1-180)"
+              >
             </td>
           </tr>
         </tbody>

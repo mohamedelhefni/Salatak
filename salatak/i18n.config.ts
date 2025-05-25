@@ -51,6 +51,7 @@ export default defineI18nConfig(() => ({
       "Preview": "Preview",
       "schedule_prayers": "Schedule your prayers on any calendar now!",
       "text_copied_to_clipboard": "Url Copied",
+      "minutes": "minutes",
     },
     ar: {
       "welcome": "اهلا",
@@ -100,7 +101,8 @@ export default defineI18nConfig(() => ({
       "Preview Calendar": "معاينة التقويم",
       "Download Calendar": "تحميل التقويم",
       "Preview": "معاينة",
-      "text_copied_to_clipboard": "تم نسخ العنوان بنجاح"
+      "text_copied_to_clipboard": "تم نسخ العنوان بنجاح",
+      "minutes": "دقائق",
     }
   }
 }))
