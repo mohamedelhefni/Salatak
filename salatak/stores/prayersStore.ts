@@ -109,7 +109,7 @@ export const usePrayersStore = defineStore('prayers', {
     setPrayDuration(pray: any, duration: any) {
       let p = this.getPray(pray.name)
       if (!p) return
-      
+
       // Convert to number and validate
       const numDuration = Number(duration)
       if (isNaN(numDuration) || numDuration < 0) {
@@ -117,20 +117,20 @@ export const usePrayersStore = defineStore('prayers', {
         p.duration = 10
         return
       }
-      
+
       // Ensure reasonable limits (max 180 minutes = 3 hours)
       if (numDuration > 180) {
         console.warn(`Duration too large: ${numDuration}. Setting to maximum of 180 minutes.`)
         p.duration = 180
         return
       }
-      
+
       p.duration = numDuration
     },
     setPrayRemainder(pray: any, duration: any) {
       let p = this.getPray(pray.name)
       if (!p) return
-      
+
       // Convert to number and validate
       const numRemainder = Number(duration)
       if (isNaN(numRemainder) || numRemainder < 0) {
@@ -138,14 +138,14 @@ export const usePrayersStore = defineStore('prayers', {
         p.remainder = 15
         return
       }
-      
+
       // Ensure reasonable limits (max 60 minutes for reminder)
       if (numRemainder > 60) {
         console.warn(`Remainder too large: ${numRemainder}. Setting to maximum of 60 minutes.`)
         p.remainder = 60
         return
       }
-      
+
       p.remainder = numRemainder
     },
     setStartDate(date: any) {
@@ -181,14 +181,13 @@ export const usePrayersStore = defineStore('prayers', {
       this.loading = true
       await service.getPrayersTimings()
       this.loading = false
-      
-      // Create a mapping of prayer durations
+
+      const selectedPrayers = this.prayers.filter(p => p.checked).map(p => p.name).join(',');
       const durationParams = this.prayers
         .filter(p => p.checked)
         .map(p => `${p.name.toLowerCase()}Duration=${p.duration}`)
         .join('&')
-      
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
@@ -249,7 +248,7 @@ export const usePrayersStore = defineStore('prayers', {
           Object.entries(day.timings).map(t => ({ name: t[0], date: t[1] })).forEach(pray => {
             let prayerConfig = this.prayers.find(p => p.name === pray.name)
             if (!prayerConfig || !prayerConfig.checked) return
-            
+
             let dayName = day.date.gregorian.weekday.en
             let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : Number(prayerConfig.duration)
             let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
