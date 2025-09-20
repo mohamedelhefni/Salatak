@@ -17,6 +17,9 @@ importers:
       '@fullcalendar/vue3':
         specifier: ^6.1.8
         version: 6.1.8(@fullcalendar/core@6.1.8)(vue@3.3.4)
+      '@types/leaflet':
+        specifier: ^1.9.20
+        version: 1.9.20
       '@vercel/analytics':
         specifier: ^1.4.1
         version: 1.4.1(vue-router@4.2.4(vue@3.3.4))(vue@3.3.4)
@@ -29,6 +32,9 @@ importers:
       ics:
         specifier: ^3.4.0
         version: 3.4.0
+      leaflet:
+        specifier: ^1.9.4
+        version: 1.9.4
       posthog-js:
         specifier: ^1.266.0
         version: 1.266.0
@@ -914,11 +920,17 @@ packages:
   '@types/estree@1.0.1':
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
 
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
+
   '@types/http-proxy@1.17.11':
     resolution: {integrity: sha512-HC8G7c1WmaF2ekqpnFq626xd3Zz0uvaqFmBJNRZCGEZCXkvSdJoNFn/8Ygbd9fKNQj8UzLdCETaI0UWPAjK7IA==}
 
   '@types/json-schema@7.0.12':
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
+
+  '@types/leaflet@1.9.20':
+    resolution: {integrity: sha512-rooalPMlk61LCaLOvBF2VIf9M47HgMQqi5xQ9QRi7c8PkdIe0WrIi5IxXUXQjAdL0c+vcQ01mYWbthzmp9GHWw==}
 
   '@types/node@18.17.1':
     resolution: {integrity: sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==}
@@ -2579,6 +2591,9 @@ packages:
   lazystream@1.0.1:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
+
+  leaflet@1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
 
   lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
@@ -5378,11 +5393,17 @@ snapshots:
 
   '@types/estree@1.0.1': {}
 
+  '@types/geojson@7946.0.16': {}
+
   '@types/http-proxy@1.17.11':
     dependencies:
       '@types/node': 18.17.1
 
   '@types/json-schema@7.0.12': {}
+
+  '@types/leaflet@1.9.20':
+    dependencies:
+      '@types/geojson': 7946.0.16
 
   '@types/node@18.17.1': {}
 
@@ -7214,6 +7235,8 @@ snapshots:
   lazystream@1.0.1:
     dependencies:
       readable-stream: 2.3.8
+
+  leaflet@1.9.4: {}
 
   lilconfig@2.1.0: {}
 

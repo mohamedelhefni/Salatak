@@ -22,10 +22,12 @@
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/vue3": "^6.1.8",
+    "@types/leaflet": "^1.9.20",
     "@vercel/analytics": "^1.4.1",
     "date-fns": "^2.30.0",
     "ical-generator": "^8.1.1",
     "ics": "^3.4.0",
+    "leaflet": "^1.9.4",
     "posthog-js": "^1.266.0"
   }
 }

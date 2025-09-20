@@ -21,19 +21,7 @@ onMounted(async () => {
       <p>{{ $t("schedule_prayers") }}</p>
       <div class="flex flex-col gap-2">
         <DatePicker />
-        <div class="form-control w-full max-w-lg">
-          <label class="label">
-            <span class="label-text">{{ $t("Address") }}</span>
-          </label>
-          <div class="input-group rtl:flex-row-reverse ">
-            <input type="text" :placeholder="$t('Address')" :value="location.address"
-              class=" input input-bordered w-full" />
-            <button @click="prayersStore.getLocation()" class="btn btn-primary btn-square">
-              <IconsMapPin class="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-
+        <LocationInput />
         <div class="form-control w-full max-w-lg">
           <label class="label">
             <span class="label-text">{{ $t("Method of calculation") }}</span>

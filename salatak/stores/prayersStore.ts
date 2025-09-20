@@ -95,6 +95,9 @@ export const usePrayersStore = defineStore('prayers', {
     setAsrMethod(method: number) {
       this.asrMethod = method
     },
+    setLocation(location: AddressLocaiton) {
+      this.location = { ...location }
+    },
     getPray(name: string) {
       return this.prayers.find(pray => pray.name == name)
     },
