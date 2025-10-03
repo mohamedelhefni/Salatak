@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt';
 import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { location, calcMethod, asrMethod, loading } = storeToRefs(prayersStore)
@@ -41,7 +40,6 @@ const showOnboardingManually = () => {
 </script>
 
 <template>
-  <Analytics />
   <div class="grid grid-cols-1 md:grid-cols-3 gap-1 w-full h-full px-10 my-10 ">
     <AppCard class="self-start">
       <div class="flex justify-between items-start mb-4">
