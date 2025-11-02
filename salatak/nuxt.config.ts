@@ -4,7 +4,8 @@ export default defineNuxtConfig({
     public: {
       posthogPublicKey: 'phc_KeGTxoocJ5h4e5ikDSxqx2zYAriw7MjaazetmmC28LX',
       posthogHost: 'https://us.i.posthog.com',
-      posthogDefaults: '2025-05-24'
+      posthogDefaults: '2025-05-24',
+      analyticsUrl: 'https://siraaj.live',
     }
   },
   devtools: { enabled: true },
