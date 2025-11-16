@@ -1,4 +1,4 @@
-import ical, { ICalAlarmType } from 'ical-generator';
+import ical, { ICalAlarmType, ICalEventBusyStatus, ICalEventTransparency } from 'ical-generator';
 import { PrayerTimingsService } from '~/services/PrayerTimeingsService';
 
 function parsePrayerTime(timeStr: string): string {
@@ -129,6 +129,8 @@ export default defineEventHandler(async (event) => {
                             end: endDate,
                             summary: `🕋 ${displayName}`,
                             description: `Prayer time for ${displayName}`,
+                            busystatus: ICalEventBusyStatus.BUSY,
+                            transparency: ICalEventTransparency.OPAQUE,
                         });
                         if (Number(alarm) > 0) {
                             event.createAlarm({
