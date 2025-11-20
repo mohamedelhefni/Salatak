@@ -5,9 +5,11 @@ const uiStore = useUiStore()
 
 </script>
 <template >
-  <div :data-theme="uiStore.theme" class="min-h-screen w-full h-full flex flex-col"
+  <div :data-theme="uiStore.theme" class="min-h-screen w-full flex flex-col bg-base-100"
     :dir="$i18n.locale == 'ar' ? 'rtl' : 'ltr'">
     <Navbar />
-    <TheApp />
+    <div class="flex-1 overflow-y-auto">
+      <TheApp />
+    </div>
   </div>
 </template>
