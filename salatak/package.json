@@ -15,7 +15,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@pinia/nuxt": "^0.4.11",
     "@types/node": "^18.17.1",
-    "daisyui": "^3.5.0",
+    "daisyui": "^3.9.4",
     "nuxt": "^3.6.5"
   },
   "dependencies": {

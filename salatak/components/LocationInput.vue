@@ -1,49 +1,48 @@
 <template>
-  <div class="form-control w-full max-w-lg">
-    <label class="label">
-      <span class="label-text">{{ $t("Location") }}</span>
+  <div class="form-control w-full">
+    <label class="label py-1">
+      <span class="label-text text-xs">{{ $t("Location") }}</span>
     </label>
     
-    <!-- Location method tabs -->
-    <div class="tabs tabs-boxed mb-3">
+    <!-- Location method tabs - compact -->
+    <div class="tabs tabs-boxed mb-2 text-xs">
       <button 
         v-for="method in locationMethods" 
         :key="method.key"
         @click="activeMethod = method.key"
-        :class="['tab', { 'tab-active': activeMethod === method.key }]"
+        :class="['tab tab-sm', { 'tab-active': activeMethod === method.key }]"
       >
-        <IconsMapPin v-if="method.key === 'geolocation'" class="w-4 h-4 mr-1" />
-        <IconsSearch v-else-if="method.key === 'address'" class="w-4 h-4 mr-1" />
-        <IconsMapPin v-else-if="method.key === 'map'" class="w-4 h-4 mr-1" />
-        <IconsCoordinates v-else-if="method.key === 'coordinates'" class="w-4 h-4 mr-1" />
-        {{ $t(method.label) }}
+        <IconsMapPin v-if="method.key === 'geolocation'" class="w-3 h-3 mr-1" />
+        <IconsSearch v-else-if="method.key === 'address'" class="w-3 h-3 mr-1" />
+        <IconsMapPin v-else-if="method.key === 'map'" class="w-3 h-3 mr-1" />
+        <IconsCoordinates v-else-if="method.key === 'coordinates'" class="w-3 h-3 mr-1" />
+        <span class="hidden sm:inline">{{ $t(method.label) }}</span>
       </button>
     </div>
 
     <!-- Geolocation method -->
-    <div v-if="activeMethod === 'geolocation'" class="space-y-3">
-      <div class="input-group rtl:flex-row-reverse">
+    <div v-if="activeMethod === 'geolocation'" class="space-y-2">
+      <div class="join w-full">
         <input 
           type="text" 
           :placeholder="$t('Address')" 
           :value="location.address"
-          class="input input-bordered w-full"
+          class="input input-sm input-bordered join-item flex-1"
           readonly
         />
         <button 
           @click="getCurrentLocation()" 
-          class="btn btn-primary btn-square"
+          class="btn btn-sm btn-primary join-item"
           :disabled="loadingLocation"
         >
-          <span v-if="loadingLocation" class="loading loading-spinner loading-sm"></span>
-          <IconsMapPin v-else class="w-6 h-6" />
+          <span v-if="loadingLocation" class="loading loading-spinner loading-xs"></span>
+          <IconsMapPin v-else class="w-4 h-4" />
         </button>
       </div>
-      <p class="text-sm text-gray-500">{{ $t("Click the location button to use your current location") }}</p>
     </div>
 
     <!-- Address search method -->
-    <div v-if="activeMethod === 'address'" class="space-y-3">
+    <div v-if="activeMethod === 'address'" class="space-y-2">
       <div class="relative">
         <input 
           v-model="addressQuery"
@@ -51,80 +50,71 @@
           @focus="showSuggestions = true"
           type="text" 
           :placeholder="$t('Enter your address or city name')"
-          class="input input-bordered w-full"
+          class="input input-sm input-bordered w-full"
         />
         
         <!-- Address suggestions -->
         <div 
           v-if="showSuggestions && addressSuggestions.length > 0"
-          class="absolute z-10 w-full mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          class="absolute z-10 w-full mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
         >
           <button
             v-for="(suggestion, index) in addressSuggestions"
             :key="index"
             @click="selectAddress(suggestion)"
-            class="w-full text-left px-4 py-2 hover:bg-base-200 border-b border-base-300 last:border-b-0"
+            class="w-full text-left px-3 py-2 hover:bg-base-200 border-b border-base-300 last:border-b-0 text-sm"
           >
-            <div class="font-medium">{{ suggestion.display_name }}</div>
-            <div class="text-sm text-gray-500">
+            <div class="font-medium truncate">{{ suggestion.display_name }}</div>
+            <div class="text-xs text-gray-500">
               {{ suggestion.lat }}, {{ suggestion.lon }}
             </div>
           </button>
         </div>
       </div>
-      <p class="text-sm text-gray-500">{{ $t("Type to search for addresses and locations") }}</p>
     </div>
 
     <!-- Coordinates method -->
-    <div v-if="activeMethod === 'coordinates'" class="space-y-3">
+    <div v-if="activeMethod === 'coordinates'" class="space-y-2">
       <div class="grid grid-cols-2 gap-2">
         <div class="form-control">
-          <label class="label">
-            <span class="label-text text-sm">{{ $t("Latitude") }}</span>
-          </label>
           <input 
             v-model.number="manualCoords.lat"
             @blur="validateAndSetCoordinates"
             type="number"
             step="any"
-            :placeholder="$t('e.g., 40.7128')"
-            class="input input-bordered input-sm"
+            :placeholder="$t('Latitude')"
+            class="input input-xs input-bordered"
           />
         </div>
         <div class="form-control">
-          <label class="label">
-            <span class="label-text text-sm">{{ $t("Longitude") }}</span>
-          </label>
           <input 
             v-model.number="manualCoords.lon"
             @blur="validateAndSetCoordinates"
             type="number"
             step="any"
-            :placeholder="$t('e.g., -74.0060')"
-            class="input input-bordered input-sm"
+            :placeholder="$t('Longitude')"
+            class="input input-xs input-bordered"
           />
         </div>
       </div>
       <button 
         @click="validateAndSetCoordinates"
-        class="btn btn-sm btn-secondary"
+        class="btn btn-xs btn-secondary w-full"
         :disabled="!manualCoords.lat || !manualCoords.lon"
       >
         {{ $t("Set Location") }}
       </button>
-      <p class="text-sm text-gray-500">{{ $t("Enter latitude and longitude coordinates directly") }}</p>
     </div>
 
     <!-- Map picker method -->
-    <div v-if="activeMethod === 'map'" class="space-y-3">
+    <div v-if="activeMethod === 'map'" class="space-y-2">
       <button 
         @click="showMapModal = true"
-        class="btn btn-primary w-full"
+        class="btn btn-sm btn-primary w-full"
       >
-        <IconsMapPin class="w-5 h-5 mr-2" />
-        {{ $t("Open Map to Select Location") }}
+        <IconsMapPin class="w-4 h-4" />
+        {{ $t("Open Map") }}
       </button>
-      <p class="text-sm text-gray-500">{{ $t("Click the button above to open an interactive map") }}</p>
     </div>
 
     <!-- Map Modal -->
@@ -158,12 +148,13 @@
       <div class="modal-backdrop" @click="showMapModal = false"></div>
     </div>
 
-    <!-- Current location display -->
-    <div v-if="location.lat && location.long" class="mt-3 p-3 bg-base-200 rounded-lg">
-      <div class="text-sm">
-        <div class="font-medium">{{ $t("Current Location") }}:</div>
-        <div class="text-gray-600">{{ location.address || `${location.lat}, ${location.long}` }}</div>
-        <div class="text-xs text-gray-500">{{ $t("Coordinates") }}: {{ location.lat?.toFixed(4) }}, {{ location.long?.toFixed(4) }}</div>
+    <!-- Current location display - compact badge -->
+    <div v-if="location.lat && location.long" class="mt-2">
+      <div class="badge badge-success badge-sm gap-1 w-full py-3 text-xs truncate">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="truncate">{{ location.address || `${location.lat?.toFixed(2)}, ${location.long?.toFixed(2)}` }}</span>
       </div>
     </div>
   </div>
