@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import enLocales from "@fullcalendar/core/locales/en-gb"
 import arLocales from "@fullcalendar/core/locales/ar"
 import { usePrayersStore } from '~/stores/prayersStore';
@@ -11,7 +12,12 @@ const { setEvents, mapTimingsToEvents } = prayersStore
 const { $toast } = useNuxtApp()
 
 let calendarOptions = ref({
-  plugins: [dayGridPlugin],
+  plugins: [dayGridPlugin, timeGridPlugin],
+  headerToolbar: {
+    left: 'prev,next today',
+    center: 'title',
+    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+  },
   locales: [enLocales, arLocales],
   locale: locale.value || "en",
   initialView: 'dayGridMonth',

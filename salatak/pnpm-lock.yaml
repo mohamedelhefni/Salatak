@@ -14,6 +14,9 @@ importers:
       '@fullcalendar/daygrid':
         specifier: ^6.1.8
         version: 6.1.8(@fullcalendar/core@6.1.8)
+      '@fullcalendar/timegrid':
+        specifier: ^6.1.19
+        version: 6.1.19(@fullcalendar/core@6.1.8)
       '@fullcalendar/vue3':
         specifier: ^6.1.8
         version: 6.1.8(@fullcalendar/core@6.1.8)(vue@3.3.4)
@@ -534,10 +537,20 @@ packages:
   '@fullcalendar/core@6.1.8':
     resolution: {integrity: sha512-i8JBIvZCWGO9dsMEDcx9bnsQZ9PtGSJdOXGgWbhLaGq2iq41OBdp9g9gM4b/Otv2oK8bL5Gl6CsMmb/HkDtA6Q==}
 
+  '@fullcalendar/daygrid@6.1.19':
+    resolution: {integrity: sha512-IAAfnMICnVWPjpT4zi87i3FEw0xxSza0avqY/HedKEz+l5MTBYvCDPOWDATpzXoLut3aACsjktIyw9thvIcRYQ==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.19
+
   '@fullcalendar/daygrid@6.1.8':
     resolution: {integrity: sha512-kCZxQFKb9Vqa3CZRX0v7rMSJ2mlTt4gDpyLfiNJKxUAq7W51uKurPaFZWicaXy1ESHVBxKNlbx5uNjBpyu50JQ==}
     peerDependencies:
       '@fullcalendar/core': ~6.1.8
+
+  '@fullcalendar/timegrid@6.1.19':
+    resolution: {integrity: sha512-OuzpUueyO9wB5OZ8rs7TWIoqvu4v3yEqdDxZ2VcsMldCpYJRiOe7yHWKr4ap5Tb0fs7Rjbserc/b6Nt7ol6BRg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.19
 
   '@fullcalendar/vue3@6.1.8':
     resolution: {integrity: sha512-rO7vZnGXyd5djOhpJ9Y33PhnUeJ/1IN1rIVWPWpleh1hboi8kCwVqE47oOwj7NvTEJq1EH8/58UuYtIqRQ73Lg==}
@@ -4785,9 +4798,18 @@ snapshots:
     dependencies:
       preact: 10.12.1
 
+  '@fullcalendar/daygrid@6.1.19(@fullcalendar/core@6.1.8)':
+    dependencies:
+      '@fullcalendar/core': 6.1.8
+
   '@fullcalendar/daygrid@6.1.8(@fullcalendar/core@6.1.8)':
     dependencies:
       '@fullcalendar/core': 6.1.8
+
+  '@fullcalendar/timegrid@6.1.19(@fullcalendar/core@6.1.8)':
+    dependencies:
+      '@fullcalendar/core': 6.1.8
+      '@fullcalendar/daygrid': 6.1.19(@fullcalendar/core@6.1.8)
 
   '@fullcalendar/vue3@6.1.8(@fullcalendar/core@6.1.8)(vue@3.3.4)':
     dependencies:
