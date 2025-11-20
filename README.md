@@ -1,5 +1,7 @@
 # Salatak App - Prayer Times ICS File Generator
 
+**Languages:** [English](README.md) | [العربية](README.ar.md)
+
 Welcome to Salatak App! This web application helps you generate an ICS (iCalendar) file containing accurate prayer times for your location. With this ICS file, you can easily import prayer times into your calendar application of choice and receive timely reminders for each prayer. Additionally, you can now subscribe to a calendar URL for automatic updates, ensuring your prayer times are always up-to-date.
 
 ## Introduction
