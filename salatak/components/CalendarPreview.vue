@@ -6,7 +6,7 @@ import arLocales from "@fullcalendar/core/locales/ar"
 import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { locale, t } = useI18n()
-const { subscribeURL, timings } = storeToRefs(prayersStore)
+const { subscribeURL, timings, prayers } = storeToRefs(prayersStore)
 const { setEvents, mapTimingsToEvents } = prayersStore
 const { $toast } = useNuxtApp()
 
@@ -25,12 +25,12 @@ watch(locale, () => {
   calendarOptions.value.locale = locale.value
 })
 
-watch(timings, (state) => {
-  let mappedEvents = mapTimingsToEvents(state, t)
+watch([timings, prayers], () => {
+  let mappedEvents = mapTimingsToEvents(timings.value, t)
   //@ts-ignore
   calendarOptions.value.events = mappedEvents
   setEvents(mappedEvents)
-})
+}, { deep: true })
 
 
 const copyToClipboard = () => {

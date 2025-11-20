@@ -9,7 +9,7 @@ export const useUiStore = defineStore('ui', {
   actions: {
     toggleTheme() {
       if (this.theme == 'dark') {
-        this.theme = 'cupcake'
+        this.theme = 'wireframe'
         return
       }
       this.theme = 'dark'

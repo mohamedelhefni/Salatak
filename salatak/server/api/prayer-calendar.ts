@@ -47,6 +47,11 @@ export default defineEventHandler(async (event) => {
             asrDuration = duration,
             maghribDuration = duration,
             ishaDuration = duration,
+            fajrOffset = '0',
+            dhuhrOffset = '0',
+            asrOffset = '0',
+            maghribOffset = '0',
+            ishaOffset = '0',
             selectedPrayers
         } = query;
 
@@ -83,6 +88,14 @@ export default defineEventHandler(async (event) => {
             'Isha': Number(ishaDuration)
         };
 
+        const prayerOffsets = {
+            'Fajr': Number(fajrOffset),
+            'Dhuhr': Number(dhuhrOffset),
+            'Asr': Number(asrOffset),
+            'Maghrib': Number(maghribOffset),
+            'Isha': Number(ishaOffset)
+        };
+
         // Special case for Jummah
         const JUMMAH_DURATION = 60;
 
@@ -103,20 +116,27 @@ export default defineEventHandler(async (event) => {
                         continue;
                     }
                     try {
+                        // Determine the duration and offset based on prayer name and day
+                        let prayerDuration;
+                        let prayerOffset;
+                        if (name === 'Dhuhr' && dayName === 'Friday') {
+                            prayerDuration = JUMMAH_DURATION;
+                            prayerOffset = Number(dhuhrOffset);
+                        } else {
+                            //@ts-ignore
+                            prayerDuration = prayerDurations[name];
+                            //@ts-ignore
+                            prayerOffset = prayerOffsets[name];
+                        }
+
                         const startDate = createValidDate(dateStr, String(timeStr));
                         if (isNaN(startDate.getTime())) {
                             console.error(`Invalid date created for ${name} on ${dateStr} at ${timeStr}`);
                             continue;
                         }
 
-                        // Determine the duration based on prayer name and day
-                        let prayerDuration;
-                        if (name === 'Dhuhr' && dayName === 'Friday') {
-                            prayerDuration = JUMMAH_DURATION;
-                        } else {
-                            //@ts-ignore
-                            prayerDuration = prayerDurations[name];
-                        }
+                        // Apply offset
+                        startDate.setMinutes(startDate.getMinutes() + prayerOffset);
 
                         const endDate = new Date(startDate);
                         endDate.setMinutes(endDate.getMinutes() + prayerDuration);

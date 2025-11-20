@@ -350,6 +350,7 @@ export default defineI18nConfig(() => ({
       "Prayers": "الصلوات",
       "Prayer": "الصلاة",
       "Duration": "المدة",
+      "Offset": "الإزاحة",
       "Preview Calendar": "معاينة التقويم",
       "Download Calendar": "تحميل التقويم",
       "Preview": "معاينة",

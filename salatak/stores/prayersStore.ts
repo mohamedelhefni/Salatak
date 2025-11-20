@@ -42,28 +42,33 @@ export const usePrayersStore = defineStore('prayers', {
           checked: true,
           name: "Fajr",
           duration: 10,
-          remainder: 15
+          remainder: 15,
+          offset: 0
         },
         {
           checked: true,
           name: "Dhuhr",
           duration: 10,
-          remainder: 15
+          remainder: 15,
+          offset: 0
         }, {
           checked: true,
           name: "Asr",
           duration: 10,
-          remainder: 15
+          remainder: 15,
+          offset: 0
         }, {
           checked: true,
           name: "Maghrib",
           duration: 10,
-          remainder: 15
+          remainder: 15,
+          offset: 0
         }, {
           checked: true,
           name: "Isha",
           duration: 10,
-          remainder: 15
+          remainder: 15,
+          offset: 0
         },
       ],
       timings: [],
@@ -130,6 +135,27 @@ export const usePrayersStore = defineStore('prayers', {
 
       p.duration = numDuration
     },
+    setPrayOffset(pray: any, offset: any) {
+      let p = this.getPray(pray.name)
+      if (!p) return
+
+      // Convert to number and validate
+      const numOffset = Number(offset)
+      if (isNaN(numOffset)) {
+        console.warn(`Invalid offset value: ${offset}. Using default value of 0.`)
+        p.offset = 0
+        return
+      }
+
+      // Ensure reasonable limits (e.g. +/- 60 minutes)
+      if (Math.abs(numOffset) > 60) {
+        console.warn(`Offset too large: ${numOffset}. Setting to maximum of +/- 60 minutes.`)
+        p.offset = numOffset > 0 ? 60 : -60
+        return
+      }
+
+      p.offset = numOffset
+    },
     setPrayRemainder(pray: any, duration: any) {
       let p = this.getPray(pray.name)
       if (!p) return
@@ -190,7 +216,11 @@ export const usePrayersStore = defineStore('prayers', {
         .filter(p => p.checked)
         .map(p => `${p.name.toLowerCase()}Duration=${p.duration}`)
         .join('&')
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
+      const offsetParams = this.prayers
+        .filter(p => p.checked)
+        .map(p => `${p.name.toLowerCase()}Offset=${p.offset}`)
+        .join('&')
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&${offsetParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
@@ -254,8 +284,10 @@ export const usePrayersStore = defineStore('prayers', {
 
             let dayName = day.date.gregorian.weekday.en
             let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : Number(prayerConfig.duration)
+            let offset = Number(prayerConfig.offset) || 0
             let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
             let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
+            prayDateStart.setMinutes(prayDateStart.getMinutes() + offset)
             let prayDateEnd = new Date(prayDateStart)
             prayDateEnd.setMinutes(prayDateStart.getMinutes() + bufferTime)
             events.push({ title: `🕋 ${t(prayName)}`, start: prayDateStart, end: prayDateEnd })
