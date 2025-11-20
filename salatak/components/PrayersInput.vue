@@ -3,7 +3,7 @@ import { usePrayersStore } from '~/stores/prayersStore';
 
 const prayersStore = usePrayersStore()
 const { prayers } = storeToRefs(prayersStore)
-const { setPrayActive, setPrayDuration, setPrayRemainder } = prayersStore
+const { setPrayActive, setPrayDuration, setPrayRemainder, setPrayOffset } = prayersStore
 
 // Handle duration input with validation
 const handleDurationInput = (prayer: any, event: any) => {
@@ -14,6 +14,18 @@ const handleDurationInput = (prayer: any, event: any) => {
   const updatedPrayer = prayersStore.getPray(prayer.name)
   if (updatedPrayer && updatedPrayer.duration !== Number(value)) {
     event.target.value = updatedPrayer.duration
+  }
+}
+
+// Handle offset input with validation
+const handleOffsetInput = (prayer: any, event: any) => {
+  const value = event.target.value
+  setPrayOffset(prayer, value)
+  
+  // Update the input value to reflect any corrections made by the store
+  const updatedPrayer = prayersStore.getPray(prayer.name)
+  if (updatedPrayer && updatedPrayer.offset !== Number(value)) {
+    event.target.value = updatedPrayer.offset
   }
 }
 
@@ -32,6 +44,7 @@ const handleDurationInput = (prayer: any, event: any) => {
             </th>
             <th>{{ $t("Prayer") }}</th>
             <th>{{ $t("Duration") }} ({{ $t("minutes") }})</th>
+            <th>{{ $t("Offset") }} ({{ $t("minutes") }})</th>
           </tr>
         </thead>
         <tbody>
@@ -56,6 +69,19 @@ const handleDurationInput = (prayer: any, event: any) => {
                 step="1"
                 :placeholder="$t('minutes')"
                 title="Duration in minutes (1-180)"
+              >
+            </td>
+            <td>
+              <input 
+                @input="(e: any) => handleOffsetInput(prayer, e)" 
+                type="number" 
+                class="input w-20"
+                :value="prayer.offset"
+                min="-60"
+                max="60"
+                step="1"
+                :placeholder="$t('minutes')"
+                title="Offset in minutes (-60 to 60)"
               >
             </td>
           </tr>

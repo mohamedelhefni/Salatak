@@ -9,5 +9,10 @@ export default defineNuxtPlugin(() => {
     autoTrack: true,
     debug: true
   });
+  return {
+    provide: {
+      siraaj: () => analytics
+    }
+  }
 });
 
