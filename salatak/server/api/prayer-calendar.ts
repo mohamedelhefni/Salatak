@@ -47,11 +47,13 @@ export default defineEventHandler(async (event) => {
             asrDuration = duration,
             maghribDuration = duration,
             ishaDuration = duration,
+            jummahDuration = '60',
             fajrOffset = '0',
             dhuhrOffset = '0',
             asrOffset = '0',
             maghribOffset = '0',
             ishaOffset = '0',
+            jummahOffset = '0',
             selectedPrayers
         } = query;
 
@@ -96,9 +98,6 @@ export default defineEventHandler(async (event) => {
             'Isha': Number(ishaOffset)
         };
 
-        // Special case for Jummah
-        const JUMMAH_DURATION = 60;
-
         if (selectedPrayers && typeof selectedPrayers === 'string') {
             const prayerNames = selectedPrayers.split(',');
             if (prayerNames.length > 0) {
@@ -120,8 +119,8 @@ export default defineEventHandler(async (event) => {
                         let prayerDuration;
                         let prayerOffset;
                         if (name === 'Dhuhr' && dayName === 'Friday') {
-                            prayerDuration = JUMMAH_DURATION;
-                            prayerOffset = Number(dhuhrOffset);
+                            prayerDuration = Number(jummahDuration);
+                            prayerOffset = Number(jummahOffset);
                         } else {
                             //@ts-ignore
                             prayerDuration = prayerDurations[name];
