@@ -17,6 +17,8 @@ interface State {
   events: any[]
   startDate: Date
   endDate: Date
+  dateMode: 'fixed' | 'rolling'
+  rollingDuration: number
   calcMethod: number
   calcMethods: PrayerCalcMethod[]
   days: number
@@ -80,6 +82,8 @@ export const usePrayersStore = defineStore('prayers', {
       timings: [],
       startDate: new Date(),
       endDate: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 days from now
+      dateMode: 'rolling', // Default to rolling mode for better UX
+      rollingDuration: 18, // Default to 18 months
       calcMethod: 5, // 5 -> egyption calc method
       calcMethods: [],
       days: 7,
@@ -105,6 +109,12 @@ export const usePrayersStore = defineStore('prayers', {
     },
     setAsrMethod(method: number) {
       this.asrMethod = method
+    },
+    setDateMode(mode: 'fixed' | 'rolling') {
+      this.dateMode = mode
+    },
+    setRollingDuration(months: number) {
+      this.rollingDuration = months
     },
     setLocation(location: AddressLocaiton) {
       this.location = { ...location }
@@ -200,15 +210,30 @@ export const usePrayersStore = defineStore('prayers', {
       this.endDate = d;
     },
     async getPrayersTimings() {
-      const startDate = new Date(this.startDate)
-      const endDate = new Date(this.endDate)
+      // Calculate effective dates based on mode
+      let effectiveStartDate: Date;
+      let effectiveEndDate: Date;
+
+      if (this.dateMode === 'rolling') {
+        effectiveStartDate = new Date();
+        effectiveStartDate.setHours(0, 0, 0, 0);  // Start of today
+
+        effectiveEndDate = new Date();
+        effectiveEndDate.setMonth(effectiveEndDate.getMonth() + this.rollingDuration);
+        effectiveEndDate.setHours(23, 59, 59, 999);  // End of last day
+      } else {
+        effectiveStartDate = new Date(this.startDate);
+        effectiveEndDate = new Date(this.endDate);
+      }
+
       if (this.location.lat == undefined || this.location.long == undefined) {
         alert("you must enter valid address")
         return
       }
+
       const service = new PrayerTimingsService({
-        startDate: startDate,
-        endDate: endDate,
+        startDate: effectiveStartDate,
+        endDate: effectiveEndDate,
         location: this.location,
         calcMethod: this.calcMethod,
         asrMethod: this.asrMethod
@@ -233,7 +258,15 @@ export const usePrayersStore = defineStore('prayers', {
         ? `&jummahDuration=${jummahPrayer.duration}&jummahOffset=${jummahPrayer.offset}`
         : ''
 
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&${offsetParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
+      // Different URL format based on date mode
+      let dateParams;
+      if (this.dateMode === 'rolling') {
+        dateParams = `rollingDuration=${this.rollingDuration}`;
+      } else {
+        dateParams = `startDate=${effectiveStartDate.toISOString().slice(0, 10)}&endDate=${effectiveEndDate.toISOString().slice(0, 10)}`;
+      }
+
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&${dateParams}&alarm=15&${durationParams}&${offsetParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
