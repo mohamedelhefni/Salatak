@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
-const { location, calcMethod, asrMethod, loading, startDate, endDate } = storeToRefs(prayersStore)
-const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading, setStartDate, setEndDate } = prayersStore
+const { location, calcMethod, asrMethod, loading, startDate, endDate, dateMode, rollingDuration } = storeToRefs(prayersStore)
+const { setCalcMethod, setAsrMethod, setDays, getPrayersTimings, downloadCalendar, setLoading, setStartDate, setEndDate, setDateMode, setRollingDuration } = prayersStore
 
 // Onboarding
 const { hasCompletedOnboarding, completeOnboarding, isNewUser } = useOnboarding();
@@ -118,8 +118,37 @@ const activeTab = ref('configuration');
             <div class="tab-content-wrapper">
               <!-- Configuration Tab -->
               <div v-show="activeTab === 'configuration'" class="tab-content-panel">
-                <!-- Compact Date Picker -->
-                <div class="grid grid-cols-2 gap-2 mb-3">
+                <!-- Date Range Mode Selector -->
+                <div class="form-control mb-3">
+                  <label class="label py-1">
+                    <span class="label-text text-xs font-semibold">{{ $t("Date Range Mode") }}</span>
+                  </label>
+                  <div class="flex gap-2">
+                    <label class="flex items-center gap-2 cursor-pointer flex-1">
+                      <input
+                        type="radio"
+                        name="dateMode"
+                        class="radio radio-sm radio-primary"
+                        :checked="dateMode === 'fixed'"
+                        @change="setDateMode('fixed')"
+                      />
+                      <span class="label-text text-xs">{{ $t("Fixed Dates") }}</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer flex-1">
+                      <input
+                        type="radio"
+                        name="dateMode"
+                        class="radio radio-sm radio-primary"
+                        :checked="dateMode === 'rolling'"
+                        @change="setDateMode('rolling')"
+                      />
+                      <span class="label-text text-xs">{{ $t("Rolling Duration") }}</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Fixed Date Pickers (shown when fixed mode is selected) -->
+                <div v-if="dateMode === 'fixed'" class="grid grid-cols-2 gap-2 mb-3">
                   <div class="form-control">
                     <label class="label py-1">
                       <span class="label-text text-xs">{{ $t("start_date") }}</span>
@@ -131,6 +160,29 @@ const activeTab = ref('configuration');
                       <span class="label-text text-xs">{{ $t("end_date") }}</span>
                     </label>
                     <input type="month" class="input input-sm input-bordered" :value="endDateInput" @change="updateEndDate" />
+                  </div>
+                </div>
+
+                <!-- Rolling Duration Selector (shown when rolling mode is selected) -->
+                <div v-if="dateMode === 'rolling'" class="mb-3">
+                  <div class="form-control">
+                    <label class="label py-1">
+                      <span class="label-text text-xs">{{ $t("Duration") }}</span>
+                    </label>
+                    <select
+                      @change="(e: any) => setRollingDuration(Number(e.target.value))"
+                      class="select select-sm select-bordered w-full"
+                    >
+                      <option :selected="rollingDuration === 3" :value="3">{{ $t("3 months") }}</option>
+                      <option :selected="rollingDuration === 6" :value="6">{{ $t("6 months") }}</option>
+                      <option :selected="rollingDuration === 12" :value="12">{{ $t("12 months") }}</option>
+                      <option :selected="rollingDuration === 18" :value="18">{{ $t("18 months") }} ({{ $t("Recommended") }})</option>
+                      <option :selected="rollingDuration === 24" :value="24">{{ $t("24 months") }}</option>
+                      <option :selected="rollingDuration === 36" :value="36">{{ $t("36 months") }}</option>
+                    </select>
+                    <label class="label py-0">
+                      <span class="label-text-alt text-xs opacity-70">{{ $t("Automatically includes prayers from today") }}</span>
+                    </label>
                   </div>
                 </div>
 

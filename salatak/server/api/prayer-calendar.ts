@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
         const {
             startDate,
             endDate,
+            rollingDuration,
             lat,
             long,
             calcMethod = '2',
@@ -57,15 +58,39 @@ export default defineEventHandler(async (event) => {
             selectedPrayers
         } = query;
 
-        if (!startDate || !endDate || !lat || !long) {
+        // Calculate effective dates based on mode
+        let effectiveStartDate: Date;
+        let effectiveEndDate: Date;
+
+        if (rollingDuration) {
+            // Rolling mode: dynamic dates
+            effectiveStartDate = new Date();
+            effectiveStartDate.setHours(0, 0, 0, 0);  // Start of today
+
+            effectiveEndDate = new Date();
+            effectiveEndDate.setMonth(effectiveEndDate.getMonth() + Number(rollingDuration));
+            effectiveEndDate.setHours(23, 59, 59, 999);  // End of last day
+        } else if (startDate && endDate) {
+            // Fixed mode: use provided dates
+            effectiveStartDate = new Date(startDate as string);
+            effectiveEndDate = new Date(endDate as string);
+        } else {
             throw createError({
                 statusCode: 400,
-                message: 'Missing required parameters: startDate, endDate, lat, and long are required'
+                message: 'Either provide startDate/endDate OR rollingDuration'
             });
         }
+
+        if (!lat || !long) {
+            throw createError({
+                statusCode: 400,
+                message: 'Missing required parameters: lat and long are required'
+            });
+        }
+
         const prayerService = new PrayerTimingsService({
-            startDate: new Date(startDate as string),
-            endDate: new Date(endDate as string),
+            startDate: effectiveStartDate,
+            endDate: effectiveEndDate,
             location: {
                 lat: Number(lat),
                 long: Number(long),
