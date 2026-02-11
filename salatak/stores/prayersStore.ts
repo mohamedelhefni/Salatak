@@ -69,6 +69,12 @@ export const usePrayersStore = defineStore('prayers', {
           duration: 10,
           remainder: 15,
           offset: 0
+        }, {
+          checked: true,
+          name: "Jummah",
+          duration: 60,
+          remainder: 15,
+          offset: 0
         },
       ],
       timings: [],
@@ -211,16 +217,23 @@ export const usePrayersStore = defineStore('prayers', {
       await service.getPrayersTimings()
       this.loading = false
 
-      const selectedPrayers = this.prayers.filter(p => p.checked).map(p => p.name).join(',');
+      const selectedPrayers = this.prayers.filter(p => p.checked && p.name !== 'Jummah').map(p => p.name).join(',');
       const durationParams = this.prayers
-        .filter(p => p.checked)
+        .filter(p => p.checked && p.name !== 'Jummah')
         .map(p => `${p.name.toLowerCase()}Duration=${p.duration}`)
         .join('&')
       const offsetParams = this.prayers
-        .filter(p => p.checked)
+        .filter(p => p.checked && p.name !== 'Jummah')
         .map(p => `${p.name.toLowerCase()}Offset=${p.offset}`)
         .join('&')
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&${offsetParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
+
+      // Add Jummah parameters separately if checked
+      const jummahPrayer = this.prayers.find(p => p.name === 'Jummah')
+      const jummahParams = jummahPrayer?.checked
+        ? `&jummahDuration=${jummahPrayer.duration}&jummahOffset=${jummahPrayer.offset}`
+        : ''
+
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&startDate=${startDate.toISOString().slice(0, 10)}&endDate=${endDate.toISOString().slice(0, 10)}&alarm=15&${durationParams}&${offsetParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
     },
     async reverseGeocoding() {
@@ -275,7 +288,8 @@ export const usePrayersStore = defineStore('prayers', {
     },
     mapTimingsToEvents(months: any[], t: any) {
       const events: any[] = []
-      const JUMMAH_TIME_BUFFER = 60
+      const jummahConfig = this.prayers.find(p => p.name === 'Jummah')
+
       months.forEach((month: any) => {
         month.forEach((day: any) => {
           Object.entries(day.timings).map(t => ({ name: t[0], date: t[1] })).forEach(pray => {
@@ -283,9 +297,19 @@ export const usePrayersStore = defineStore('prayers', {
             if (!prayerConfig || !prayerConfig.checked) return
 
             let dayName = day.date.gregorian.weekday.en
-            let bufferTime = dayName == "Friday" && pray.name == "Dhuhr" ? JUMMAH_TIME_BUFFER : Number(prayerConfig.duration)
+            let isJummah = dayName == "Friday" && pray.name == "Dhuhr"
+
+            // Use Jummah config if it's Friday and Jummah is enabled, otherwise use regular prayer config
+            if (isJummah && jummahConfig?.checked) {
+              prayerConfig = jummahConfig
+            } else if (isJummah && !jummahConfig?.checked) {
+              // If Jummah is disabled, skip showing it on Friday
+              return
+            }
+
+            let bufferTime = Number(prayerConfig.duration)
             let offset = Number(prayerConfig.offset) || 0
-            let prayName = dayName == "Friday" && pray.name == "Dhuhr" ? "Jummuah" : pray.name
+            let prayName = isJummah ? "Jummuah" : pray.name
             let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
             prayDateStart.setMinutes(prayDateStart.getMinutes() + offset)
             let prayDateEnd = new Date(prayDateStart)
