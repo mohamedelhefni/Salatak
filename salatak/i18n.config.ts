@@ -204,6 +204,8 @@ export default defineI18nConfig(() => ({
       "36 months": "36 months",
       "Automatically includes prayers from today": "Automatically includes prayers from today",
       "Recommended": "Recommended",
+      "more": "more",
+      "List": "List",
     },
     ar: {
       "welcome": "اهلا",
@@ -407,6 +409,8 @@ export default defineI18nConfig(() => ({
       "Preview": "معاينة",
       "text_copied_to_clipboard": "تم نسخ العنوان بنجاح",
       "minutes": "دقائق",
+      "more": "المزيد",
+      "List": "قائمة",
     }
   }
 }))
