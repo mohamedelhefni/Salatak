@@ -323,6 +323,16 @@ export const usePrayersStore = defineStore('prayers', {
       const events: any[] = []
       const jummahConfig = this.prayers.find(p => p.name === 'Jummah')
 
+      // Prayer colors
+      const prayerColors: Record<string, string> = {
+        'Fajr': '#3B82F6',    // Blue
+        'Dhuhr': '#10B981',   // Green
+        'Asr': '#F59E0B',     // Orange
+        'Maghrib': '#EC4899', // Pink
+        'Isha': '#8B5CF6',    // Purple
+        'Jummah': '#10B981'   // Green
+      }
+
       months.forEach((month: any) => {
         month.forEach((day: any) => {
           Object.entries(day.timings).map(t => ({ name: t[0], date: t[1] })).forEach(pray => {
@@ -347,7 +357,22 @@ export const usePrayersStore = defineStore('prayers', {
             prayDateStart.setMinutes(prayDateStart.getMinutes() + offset)
             let prayDateEnd = new Date(prayDateStart)
             prayDateEnd.setMinutes(prayDateStart.getMinutes() + bufferTime)
-            events.push({ title: `🕋 ${t(prayName)}`, start: prayDateStart, end: prayDateEnd })
+
+            // Get prayer color
+            const colorKey = isJummah ? 'Jummah' : pray.name
+            const backgroundColor = prayerColors[colorKey] || '#6B7280'
+
+            events.push({
+              title: `🕋 ${t(prayName)}`,
+              start: prayDateStart,
+              end: prayDateEnd,
+              backgroundColor: backgroundColor,
+              borderColor: backgroundColor,
+              textColor: '#FFFFFF',
+              color: backgroundColor,  // This sets the overall color
+              className: 'prayer-event',
+              display: 'block'
+            })
           })
         })
       })

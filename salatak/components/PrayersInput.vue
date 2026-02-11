@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { usePrayersStore } from '~/stores/prayersStore';
+import { usePrayerColors } from '~/composables/usePrayerColors';
 
 const prayersStore = usePrayersStore()
 const { prayers } = storeToRefs(prayersStore)
 const { setPrayActive, setPrayDuration, setPrayRemainder, setPrayOffset } = prayersStore
+const { getColor } = usePrayerColors()
 
 // Handle duration input with validation
 const handleDurationInput = (prayer: any, event: any) => {
   const value = event.target.value
   setPrayDuration(prayer, value)
-  
+
   // Update the input value to reflect any corrections made by the store
   const updatedPrayer = prayersStore.getPray(prayer.name)
   if (updatedPrayer && updatedPrayer.duration !== Number(value)) {
@@ -21,12 +23,17 @@ const handleDurationInput = (prayer: any, event: any) => {
 const handleOffsetInput = (prayer: any, event: any) => {
   const value = event.target.value
   setPrayOffset(prayer, value)
-  
+
   // Update the input value to reflect any corrections made by the store
   const updatedPrayer = prayersStore.getPray(prayer.name)
   if (updatedPrayer && updatedPrayer.offset !== Number(value)) {
     event.target.value = updatedPrayer.offset
   }
+}
+
+// Get prayer color
+const getPrayerColor = (prayerName: string) => {
+  return getColor(prayerName as any)
 }
 
 </script>
@@ -68,21 +75,27 @@ const handleOffsetInput = (prayer: any, event: any) => {
           <tr v-for="prayer in prayers" :key="prayer.name" class="hover">
             <td class="p-2">
               <label class="cursor-pointer">
-                <input 
-                  @input="(e: any) => { setPrayActive(prayer, e.target.checked) }" 
-                  type="checkbox" 
+                <input
+                  @input="(e: any) => { setPrayActive(prayer, e.target.checked) }"
+                  type="checkbox"
                   class="checkbox checkbox-xs md:checkbox-sm checkbox-primary"
-                  :checked="prayer.checked" 
+                  :checked="prayer.checked"
                 />
               </label>
             </td>
             <td class="font-medium text-xs md:text-sm p-2">
-              {{ $t(prayer.name) }}
+              <div class="flex items-center gap-2">
+                <div
+                  class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-base-300"
+                  :style="{ backgroundColor: getPrayerColor(prayer.name) }"
+                ></div>
+                <span>{{ $t(prayer.name) }}</span>
+              </div>
             </td>
             <td class="p-2">
-              <input 
-                @input="(e: any) => handleDurationInput(prayer, e)" 
-                type="number" 
+              <input
+                @input="(e: any) => handleDurationInput(prayer, e)"
+                type="number"
                 class="input input-xs input-bordered w-14 md:w-16 text-center"
                 :value="prayer.duration"
                 min="1"
@@ -92,9 +105,9 @@ const handleOffsetInput = (prayer: any, event: any) => {
               >
             </td>
             <td class="p-2">
-              <input 
-                @input="(e: any) => handleOffsetInput(prayer, e)" 
-                type="number" 
+              <input
+                @input="(e: any) => handleOffsetInput(prayer, e)"
+                type="number"
                 class="input input-xs input-bordered w-14 md:w-16 text-center"
                 :value="prayer.offset"
                 min="-60"
