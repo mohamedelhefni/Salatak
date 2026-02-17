@@ -34,256 +34,102 @@
       </div>
 
       <!-- Step Content -->
-      <div class="min-h-[400px] flex flex-col justify-center">
-        <!-- Step 1: Welcome & Overview -->
+      <div class="min-h-[300px] flex flex-col justify-center">
+        <!-- Step 1: Welcome & Quick Overview -->
         <div v-if="currentStep === 0" class="text-center space-y-6">
           <div class="text-6xl mb-4">🕌</div>
-          <h4 class="text-xl font-semibold">{{ $t("Generate Prayer Time Calendars") }}</h4>
-          <p class="text-gray-600 max-w-2xl mx-auto">
-            {{ $t("Salatak helps you create and sync prayer times to any calendar application. Generate ICS files or use direct calendar links for seamless integration.") }}
+          <h4 class="text-2xl font-semibold">{{ $t("Welcome to Salatak") }}</h4>
+          <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+            {{ $t("Generate prayer time calendars in 3 simple steps") }}
           </p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div class="card bg-base-200 p-4">
-              <div class="text-2xl mb-2">📍</div>
-              <h5 class="font-medium">{{ $t("Set Location") }}</h5>
-              <p class="text-sm text-gray-600">{{ $t("Choose your location using multiple methods") }}</p>
+            <div class="card bg-gradient-to-br from-primary/20 to-primary/10 p-6">
+              <div class="text-3xl mb-3">📍</div>
+              <h5 class="font-semibold text-lg">{{ $t("1. Set Location") }}</h5>
+              <p class="text-sm text-gray-600">{{ $t("Click the location button to get your position") }}</p>
             </div>
-            <div class="card bg-base-200 p-4">
-              <div class="text-2xl mb-2">⚙️</div>
-              <h5 class="font-medium">{{ $t("Configure Prayers") }}</h5>
-              <p class="text-sm text-gray-600">{{ $t("Customize prayer times and durations") }}</p>
+            <div class="card bg-gradient-to-br from-secondary/20 to-secondary/10 p-6">
+              <div class="text-3xl mb-3">⚙️</div>
+              <h5 class="font-semibold text-lg">{{ $t("2. Configure") }}</h5>
+              <p class="text-sm text-gray-600">{{ $t("Choose prayers and calculation method") }}</p>
             </div>
-            <div class="card bg-base-200 p-4">
-              <div class="text-2xl mb-2">📅</div>
-              <h5 class="font-medium">{{ $t("Generate Calendar") }}</h5>
-              <p class="text-sm text-gray-600">{{ $t("Create calendar files or subscription links") }}</p>
+            <div class="card bg-gradient-to-br from-accent/20 to-accent/10 p-6">
+              <div class="text-3xl mb-3">📅</div>
+              <h5 class="font-semibold text-lg">{{ $t("3. Get Calendar") }}</h5>
+              <p class="text-sm text-gray-600">{{ $t("Preview and download your calendar") }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Step 2: Location Setup -->
+        <!-- Step 2: Quick Setup Guide -->
         <div v-if="currentStep === 1" class="space-y-6">
           <div class="text-center">
-            <div class="text-5xl mb-4">🌍</div>
-            <h4 class="text-xl font-semibold">{{ $t("Set Your Location") }}</h4>
-            <p class="text-gray-600">{{ $t("Accurate prayer times require your precise location") }}</p>
+            <div class="text-5xl mb-4">🚀</div>
+            <h4 class="text-2xl font-semibold">{{ $t("Quick Setup") }}</h4>
+            <p class="text-gray-600">{{ $t("Everything you need to know") }}</p>
           </div>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("4 Ways to Set Location:") }}</h5>
-              <div class="space-y-3">
-                <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                  <IconsMapPin class="w-5 h-5 text-primary" />
-                  <div>
-                    <div class="font-medium">{{ $t("Current Location") }}</div>
-                    <div class="text-sm text-gray-600">{{ $t("Use browser geolocation") }}</div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                  <IconsSearch class="w-5 h-5 text-primary" />
-                  <div>
-                    <div class="font-medium">{{ $t("Search Address") }}</div>
-                    <div class="text-sm text-gray-600">{{ $t("Type your city or address") }}</div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                  <IconsMapPin class="w-5 h-5 text-primary" />
-                  <div>
-                    <div class="font-medium">{{ $t("Pick on Map") }}</div>
-                    <div class="text-sm text-gray-600">{{ $t("Click on interactive map") }}</div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                  <IconsCoordinates class="w-5 h-5 text-primary" />
-                  <div>
-                    <div class="font-medium">{{ $t("Enter Coordinates") }}</div>
-                    <div class="text-sm text-gray-600">{{ $t("Input latitude/longitude directly") }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("Why Location Matters:") }}</h5>
-              <div class="space-y-3 text-sm text-gray-600">
-                <p>• {{ $t("Prayer times vary by geographic location") }}</p>
-                <p>• {{ $t("More precise location = more accurate times") }}</p>
-                <p>• {{ $t("Different calculation methods for different regions") }}</p>
-                <p>• {{ $t("Supports worldwide locations") }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 3: Prayer Configuration -->
-        <div v-if="currentStep === 2" class="space-y-6">
-          <div class="text-center">
-            <div class="text-5xl mb-4">⚙️</div>
-            <h4 class="text-xl font-semibold">{{ $t("Configure Your Prayers") }}</h4>
-            <p class="text-gray-600">{{ $t("Customize which prayers to include and their durations") }}</p>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("Prayer Settings:") }}</h5>
-              <div class="space-y-3">
-                <div class="p-4 bg-base-200 rounded-lg">
-                  <h6 class="font-medium mb-2">{{ $t("Select Prayers") }}</h6>
-                  <p class="text-sm text-gray-600">{{ $t("Choose which of the 5 daily prayers to include in your calendar") }}</p>
-                </div>
-                <div class="p-4 bg-base-200 rounded-lg">
-                  <h6 class="font-medium mb-2">{{ $t("Set Durations") }}</h6>
-                  <p class="text-sm text-gray-600">{{ $t("Define how long each prayer event should last (1-180 minutes)") }}</p>
-                </div>
-                <div class="p-4 bg-base-200 rounded-lg">
-                  <h6 class="font-medium mb-2">{{ $t("Calculation Method") }}</h6>
-                  <p class="text-sm text-gray-600">{{ $t("Choose the Islamic calculation method for your region") }}</p>
-                </div>
-              </div>
-            </div>
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("Special Features:") }}</h5>
-              <div class="space-y-3 text-sm text-gray-600">
-                <p>• {{ $t("Automatic Jummah (Friday) prayer scheduling") }}</p>
-                <p>• {{ $t("Different calculation methods (Egyptian, ISNA, etc.)") }}</p>
-                <p>• {{ $t("Hanafi and Shafi Asr calculation options") }}</p>
-                <p>• {{ $t("Customizable date ranges") }}</p>
-                <p>• {{ $t("Multiple language support") }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 4: Calendar Generation -->
-        <div v-if="currentStep === 3" class="space-y-6">
-          <div class="text-center">
-            <div class="text-5xl mb-4">📅</div>
-            <h4 class="text-xl font-semibold">{{ $t("Generate Your Calendar") }}</h4>
-            <p class="text-gray-600">{{ $t("Create calendar files or subscription links") }}</p>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="card bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <IconsDownload class="w-6 h-6 text-primary" />
-                <h5 class="font-semibold">{{ $t("Download ICS File") }}</h5>
-              </div>
-              <p class="text-sm text-gray-600 mb-4">
-                {{ $t("Download a calendar file that you can import into any calendar application") }}
-              </p>
-              <div class="text-xs text-gray-500">
-                <p>• {{ $t("Works with Google Calendar, Outlook, Apple Calendar") }}</p>
-                <p>• {{ $t("One-time import") }}</p>
-                <p>• {{ $t("Events are copied to your calendar") }}</p>
-              </div>
-            </div>
-
-            <div class="card bg-gradient-to-br from-secondary/10 to-primary/10 p-6">
-              <div class="flex items-center gap-3 mb-4">
-                <IconsClipboard class="w-6 h-6 text-secondary" />
-                <h5 class="font-semibold">{{ $t("Copy Subscription URL") }}</h5>
-              </div>
-              <p class="text-sm text-gray-600 mb-4">
-                {{ $t("Get a live subscription link that automatically updates") }}
-              </p>
-              <div class="text-xs text-gray-500">
-                <p>• {{ $t("Always up-to-date") }}</p>
-                <p>• {{ $t("Automatically syncs changes") }}</p>
-                <p>• {{ $t("Perfect for long-term use") }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 5: Google Calendar Import -->
-        <div v-if="currentStep === 4" class="space-y-6">
-          <div class="text-center">
-            <div class="text-5xl mb-4">📲</div>
-            <h4 class="text-xl font-semibold">{{ $t("Import to Google Calendar") }}</h4>
-            <p class="text-gray-600">{{ $t("Step-by-step guide to add prayers to your Google Calendar") }}</p>
-          </div>
-          
-          <div class="space-y-6">
-            <div class="alert alert-info">
-              <IconsClipboard class="w-6 h-6" />
-              <div>
-                <h6 class="font-medium">{{ $t("Pro Tip") }}</h6>
-                <p class="text-sm">{{ $t("Use the subscription URL for automatic updates, or download ICS for one-time import") }}</p>
-              </div>
-            </div>
-
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("Method 1: Subscription URL (Recommended)") }}</h5>
-              <div class="steps">
-                <div class="step" data-content="1">
-                  <div class="font-medium">{{ $t("Generate your prayer calendar") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Set your location, configure prayers, and click 'Preview Calendar'") }}</p>
-                </div>
-                <div class="step" data-content="2">
-                  <div class="font-medium">{{ $t("Copy the subscription URL") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Click the copy button to get your personal calendar URL") }}</p>
-                </div>
-                <div class="step" data-content="3">
-                  <div class="font-medium">{{ $t("Open Google Calendar") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Go to calendar.google.com in your browser") }}</p>
-                </div>
-                <div class="step" data-content="4">
-                  <div class="font-medium">{{ $t("Add calendar by URL") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Click '+' → 'From URL' → Paste your subscription URL") }}</p>
-                </div>
-                <div class="step" data-content="5">
-                  <div class="font-medium">{{ $t("Enjoy automatic updates") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Your prayer times will automatically update in Google Calendar") }}</p>
+          <div class="space-y-4">
+            <!-- Location -->
+            <div class="card bg-base-200 p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">📍</div>
+                <div class="flex-1">
+                  <h5 class="font-semibold text-lg mb-2">{{ $t("Set Your Location") }}</h5>
+                  <p class="text-sm text-gray-600 mb-3">{{ $t("4 ways to set your location: browser location, address search, map picker, or coordinates") }}</p>
+                  <div class="badge badge-primary badge-sm">{{ $t("Tip: Click the pulsing button") }}</div>
                 </div>
               </div>
             </div>
 
-            <div class="space-y-4">
-              <h5 class="font-medium text-lg">{{ $t("Method 2: ICS File Import") }}</h5>
-              <div class="steps">
-                <div class="step" data-content="1">
-                  <div class="font-medium">{{ $t("Download ICS file") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Click 'Download Calendar' to get the .ics file") }}</p>
+            <!-- Configuration -->
+            <div class="card bg-base-200 p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">⚙️</div>
+                <div class="flex-1">
+                  <h5 class="font-semibold text-lg mb-2">{{ $t("Configure Prayers") }}</h5>
+                  <p class="text-sm text-gray-600 mb-3">{{ $t("Select which prayers to include, set durations, and choose your calculation method") }}</p>
+                  <div class="badge badge-secondary badge-sm">{{ $t("Calendar auto-updates when you change settings") }}</div>
                 </div>
-                <div class="step" data-content="2">
-                  <div class="font-medium">{{ $t("Import to Google Calendar") }}</div>
-                  <p class="text-sm text-gray-600">{{ $t("Settings → Import & Export → Import → Select your .ics file") }}</p>
+              </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="card bg-base-200 p-4">
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">📅</div>
+                <div class="flex-1">
+                  <h5 class="font-semibold text-lg mb-2">{{ $t("Get Your Calendar") }}</h5>
+                  <p class="text-sm text-gray-600 mb-3">{{ $t("Download ICS file or copy subscription URL for Google Calendar, Outlook, or Apple Calendar") }}</p>
+                  <div class="badge badge-accent badge-sm">{{ $t("Subscription URL auto-syncs") }}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Step 6: Final Tips -->
-        <div v-if="currentStep === 5" class="text-center space-y-6">
-          <div class="text-5xl mb-4">🎉</div>
-          <h4 class="text-xl font-semibold">{{ $t("You're All Set!") }}</h4>
-          <p class="text-gray-600">{{ $t("You're ready to start using Salatak for your prayer schedule") }}</p>
+        <!-- Step 3: Ready to Start -->
+        <div v-if="currentStep === 2" class="text-center space-y-6">
+          <div class="text-6xl mb-4">🎉</div>
+          <h4 class="text-2xl font-semibold">{{ $t("You're Ready!") }}</h4>
+          <p class="text-gray-600 text-lg">{{ $t("Start by clicking the location button") }}</p>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-            <div class="card bg-base-200 p-6">
-              <h5 class="font-medium mb-3">{{ $t("Quick Tips") }}</h5>
-              <div class="text-sm text-gray-600 space-y-2 text-left">
-                <p>• {{ $t("Bookmark the subscription URL for easy access") }}</p>
-                <p>• {{ $t("Update your location if you move") }}</p>
-                <p>• {{ $t("Regenerate calendar after changing settings") }}</p>
-                <p>• {{ $t("Share calendar URLs with family members") }}</p>
-              </div>
-            </div>
-            <div class="card bg-base-200 p-6">
-              <h5 class="font-medium mb-3">{{ $t("Need Help?") }}</h5>
-              <div class="text-sm text-gray-600 space-y-2 text-left">
-                <p>• {{ $t("Use the help button for quick guidance") }}</p>
-                <p>• {{ $t("All settings are automatically saved") }}</p>
-                <p>• {{ $t("Calendar updates reflect your latest changes") }}</p>
-                <p>• {{ $t("Works on all devices and platforms") }}</p>
-              </div>
+          <div class="card bg-gradient-to-br from-primary/10 to-secondary/10 p-6 max-w-md mx-auto">
+            <h5 class="font-semibold mb-3">{{ $t("Quick Tips") }}</h5>
+            <div class="text-sm text-gray-600 space-y-2 text-left">
+              <p>✓ {{ $t("Calendar auto-previews when location is set") }}</p>
+              <p>✓ {{ $t("All settings are saved automatically") }}</p>
+              <p>✓ {{ $t("Use subscription URL for auto-updates") }}</p>
+              <p>✓ {{ $t("Click help button (?) anytime for guidance") }}</p>
             </div>
           </div>
 
           <div class="mt-8">
-            <button @click="completeOnboarding" class="btn btn-primary btn-lg">
-              {{ $t("Start Using Salatak") }}
+            <button @click="completeOnboarding" class="btn btn-primary btn-lg gap-2">
+              <span>{{ $t("Let's Start") }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
             </button>
           </div>
         </div>
@@ -314,9 +160,12 @@
         <button 
           @click="completeOnboarding"
           v-else
-          class="btn btn-primary"
+          class="btn btn-primary gap-2"
         >
-          {{ $t("Get Started") }}
+          <span>{{ $t("Get Started") }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
         </button>
       </div>
     </div>
@@ -350,10 +199,7 @@ const showOnboarding = computed({
 
 const onboardingSteps = [
   'welcome',
-  'location',
-  'configuration', 
-  'generation',
-  'import',
+  'setup',
   'completion'
 ];
 

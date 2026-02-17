@@ -22,7 +22,7 @@
 
     <!-- Geolocation method -->
     <div v-if="activeMethod === 'geolocation'" class="space-y-2">
-      <div class="join w-full">
+      <div class="join w-full relative">
         <input 
           type="text" 
           :placeholder="$t('Address')" 
@@ -32,12 +32,22 @@
         />
         <button 
           @click="getCurrentLocation()" 
-          class="btn btn-sm btn-primary join-item"
+          :class="['btn btn-sm btn-primary join-item', { 'pulse-animation': !location.lat && !loadingLocation }]"
           :disabled="loadingLocation"
+          :title="$t('Click to get your location')"
         >
           <span v-if="loadingLocation" class="loading loading-spinner loading-xs"></span>
           <IconsMapPin v-else class="w-4 h-4" />
         </button>
+        <!-- Pointer/Arrow hint -->
+        <div v-if="!location.lat && !loadingLocation" class="pointer-hint">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3" />
+          </svg>
+        </div>
+      </div>
+      <div v-if="!location.lat" class="text-xs text-center text-primary font-medium animate-pulse">
+        {{ $t("👆 Click the location button to get started") }}
       </div>
     </div>
 
@@ -367,3 +377,48 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style scoped>
+/* Pulse animation for geolocation button */
+.pulse-animation {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+/* Pointer hint styling */
+.pointer-hint {
+  position: absolute;
+  right: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: oklch(var(--p));
+  animation: bounce 1s infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0);
+  }
+  50% {
+    transform: translateY(-50%) translateX(5px);
+  }
+}
+
+/* Hide pointer hint on mobile to avoid overlap */
+@media (max-width: 640px) {
+  .pointer-hint {
+    display: none;
+  }
+}
+</style>

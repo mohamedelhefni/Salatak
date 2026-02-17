@@ -60,6 +60,31 @@ const showOnboardingManually = () => {
 
 // Tab management
 const activeTab = ref('configuration');
+
+// Auto-preview calendar when location or calc method changes
+watch([location, calcMethod, asrMethod], async ([newLocation], [oldLocation]) => {
+  // Only auto-preview if location is set and has changed
+  if (newLocation.lat && newLocation.long) {
+    // Check if location actually changed (not just initialized)
+    if (oldLocation && (oldLocation.lat !== newLocation.lat || oldLocation.long !== newLocation.long)) {
+      // Wait a bit for user to finish, then auto-preview
+      setTimeout(() => {
+        if (!loading.value) {
+          getPrayersTimings();
+        }
+      }, 500);
+    }
+  }
+}, { deep: true });
+
+// Auto-preview when calc method or asr method changes (if location is already set)
+watch([calcMethod, asrMethod], () => {
+  if (location.value.lat && location.value.long && !loading.value) {
+    setTimeout(() => {
+      getPrayersTimings();
+    }, 300);
+  }
+});
 </script>
 
 <template>
