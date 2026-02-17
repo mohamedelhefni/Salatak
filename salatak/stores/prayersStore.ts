@@ -268,6 +268,9 @@ export const usePrayersStore = defineStore('prayers', {
 
       this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&${dateParams}&alarm=15&${durationParams}&${offsetParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
+      // Track calendar preview view for PostHog survey trigger
+      const { trackCalendarPreview } = usePostHog()
+      trackCalendarPreview()
     },
     async reverseGeocoding() {
       let resp = await fetch(`https://geocode.maps.co/reverse?lat=${this.location.lat}&lon=${this.location.long}`)
@@ -291,9 +294,11 @@ export const usePrayersStore = defineStore('prayers', {
       }
       const filename = `SalatkPrayers.ics`
       const validEvents = this.events.map(event => {
-        event.start = mapEventDateToICSDate(event.start)
-        event.end = mapEventDateToICSDate(event.end)
-        return event
+        // Remove UI-specific properties that ICS library doesn't accept
+        const { backgroundColor, borderColor, textColor, color, className, display, ...icsEvent } = event
+        icsEvent.start = mapEventDateToICSDate(icsEvent.start)
+        icsEvent.end = mapEventDateToICSDate(icsEvent.end)
+        return icsEvent
       })
       const file = await new Promise((resolve, reject) => {
 
@@ -318,6 +323,10 @@ export const usePrayersStore = defineStore('prayers', {
       anchor.click();
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
+
+      // Track download event for PostHog survey trigger
+      const { trackCalendarDownload } = usePostHog()
+      trackCalendarDownload()
     },
     mapTimingsToEvents(months: any[], t: any) {
       const events: any[] = []

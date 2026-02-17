@@ -2,6 +2,11 @@
 import { useUiStore } from '~/stores/uiStore';
 const uiStore = useUiStore()
 
+// Identify user on app mount for PostHog tracking
+onMounted(() => {
+  const { identifyUser } = usePostHog()
+  identifyUser()
+})
 
 </script>
 <template >

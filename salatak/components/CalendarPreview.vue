@@ -100,6 +100,9 @@ const copyToClipboard = () => {
       .writeText(subscribeURL.value)
       .then(() => {
         $toast.show(t('text_copied_to_clipboard'), 'info');
+        // Track copy URL event for PostHog survey trigger
+        const { trackUrlCopy } = usePostHog()
+        trackUrlCopy()
       })
       .catch((error) => {
         $toast.show(t('failed_to_copy'), 'error');
@@ -113,6 +116,9 @@ const copyToClipboard = () => {
     try {
       document.execCommand('copy');
       $toast.show(t('text_copied_to_clipboard'), 'info');
+      // Track copy URL event for PostHog survey trigger
+      const { trackUrlCopy } = usePostHog()
+      trackUrlCopy()
     } catch (error) {
       $toast.show(t('failed_to_copy'), 'error');
       console.error('Fallback copy failed:', error);
