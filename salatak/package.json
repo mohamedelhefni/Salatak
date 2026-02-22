@@ -24,7 +24,6 @@
     "@fullcalendar/list": "^6.1.20",
     "@fullcalendar/timegrid": "^6.1.19",
     "@fullcalendar/vue3": "^6.1.8",
-    "@hefni101/siraaj": "^1.0.0",
     "@types/leaflet": "^1.9.20",
     "@vercel/analytics": "^1.4.1",
     "date-fns": "^2.30.0",
