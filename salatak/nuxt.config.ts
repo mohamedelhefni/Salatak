@@ -44,6 +44,7 @@ export default defineNuxtConfig({
         { hid: 'twitter:description', name: 'twitter:description', content: 'Salatak helps you generate and download ICS files for prayer times. Easily sync prayer schedules to your calendar and stay connected to your faith.' },
         { hid: 'twitter:image', name: 'twitter:image', content: 'https://og.tailgraph.com/og?fontFamily=Roboto&title=Salatak&titleTailwind=font-bold%20text-6xl%20text-emerald-800&titleFontFamily=Roboto&text=Schedule%20your%20prayer%20times%20now%20!%20&textTailwind=text-gray-700%20text-2xl%20mt-4&logoTailwind=h-8&bgTailwind=bg-white&footer=tailgraph.com&footerTailwind=text-teal-600&t=1738073382939&refresh=1' },
         { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+        { hid: 'google-site-verification', name:'google-site-verification', content: 'H8WCxUrzjlC4jvBfHu0MkxkaUKfNq6YRKmu1QjkmFIM'},
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
