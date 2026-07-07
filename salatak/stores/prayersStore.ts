@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { createEvents } from 'ics';
 import { format } from 'date-fns'
-import { AddressLocaiton, PrayerTimingsService } from '~/services/PrayerTimeingsService';
+import { type AddressLocaiton, PrayerTimingsService } from '~/services/PrayerTimeingsService';
 
 interface PrayerCalcMethod {
   id: number
@@ -43,6 +43,9 @@ export const usePrayersStore = defineStore('prayers', {
         {
           checked: true,
           name: "Fajr",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 10,
           remainder: 15,
           offset: 0
@@ -50,30 +53,45 @@ export const usePrayersStore = defineStore('prayers', {
         {
           checked: true,
           name: "Dhuhr",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 10,
           remainder: 15,
           offset: 0
         }, {
           checked: true,
           name: "Asr",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 10,
           remainder: 15,
           offset: 0
         }, {
           checked: true,
           name: "Maghrib",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 10,
           remainder: 15,
           offset: 0
         }, {
           checked: true,
           name: "Isha",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 10,
           remainder: 15,
           offset: 0
         }, {
           checked: true,
           name: "Jummah",
+          displayName: "",
+          color: "",
+          emoji: "",
           duration: 60,
           remainder: 15,
           offset: 0
@@ -193,6 +211,21 @@ export const usePrayersStore = defineStore('prayers', {
 
       p.remainder = numRemainder
     },
+    setPrayDisplayName(pray: any, name: any) {
+      let p = this.getPray(pray.name)
+      if (!p) return
+      p.displayName = String(name ?? '').trim().slice(0, 50) // ponytail: cap to keep ICS titles sane
+    },
+    setPrayColor(pray: any, color: any) {
+      let p = this.getPray(pray.name)
+      if (!p) return
+      p.color = String(color ?? '')
+    },
+    setPrayEmoji(pray: any, emoji: any) {
+      let p = this.getPray(pray.name)
+      if (!p) return
+      p.emoji = String(emoji ?? '').slice(0, 8)
+    },
     setStartDate(date: any) {
       const d = new Date(date);
       if (isNaN(d.getTime())) {
@@ -251,11 +284,15 @@ export const usePrayersStore = defineStore('prayers', {
         .filter(p => p.checked && p.name !== 'Jummah')
         .map(p => `${p.name.toLowerCase()}Offset=${p.offset}`)
         .join('&')
+      const alarmParams = this.prayers
+        .filter(p => p.checked && p.name !== 'Jummah')
+        .map(p => `${p.name.toLowerCase()}Alarm=${p.remainder}`)
+        .join('&')
 
       // Add Jummah parameters separately if checked
       const jummahPrayer = this.prayers.find(p => p.name === 'Jummah')
       const jummahParams = jummahPrayer?.checked
-        ? `&jummahDuration=${jummahPrayer.duration}&jummahOffset=${jummahPrayer.offset}`
+        ? `&jummahDuration=${jummahPrayer.duration}&jummahOffset=${jummahPrayer.offset}&jummahAlarm=${jummahPrayer.remainder}`
         : ''
 
       // Different URL format based on date mode
@@ -266,7 +303,7 @@ export const usePrayersStore = defineStore('prayers', {
         dateParams = `startDate=${effectiveStartDate.toISOString().slice(0, 10)}&endDate=${effectiveEndDate.toISOString().slice(0, 10)}`;
       }
 
-      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&${dateParams}&alarm=15&${durationParams}&${offsetParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
+      this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&${dateParams}&${durationParams}&${offsetParams}&${alarmParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
       // Track calendar preview view for PostHog survey trigger
       const { trackCalendarPreview } = usePostHog()
@@ -361,7 +398,7 @@ export const usePrayersStore = defineStore('prayers', {
 
             let bufferTime = Number(prayerConfig.duration)
             let offset = Number(prayerConfig.offset) || 0
-            let prayName = isJummah ? "Jummuah" : pray.name
+            let prayName = prayerConfig.displayName || (isJummah ? "Jummuah" : pray.name)
             let prayDateStart = new Date(`${day.date.readable} ${pray.date}`)
             prayDateStart.setMinutes(prayDateStart.getMinutes() + offset)
             let prayDateEnd = new Date(prayDateStart)
@@ -369,10 +406,10 @@ export const usePrayersStore = defineStore('prayers', {
 
             // Get prayer color
             const colorKey = isJummah ? 'Jummah' : pray.name
-            const backgroundColor = prayerColors[colorKey] || '#6B7280'
+            const backgroundColor = prayerConfig.color || prayerColors[colorKey] || '#6B7280'
 
             events.push({
-              title: `🕋 ${t(prayName)}`,
+              title: `${prayerConfig.emoji || '🕋'} ${t(prayName)}`,
               start: prayDateStart,
               end: prayDateEnd,
               backgroundColor: backgroundColor,

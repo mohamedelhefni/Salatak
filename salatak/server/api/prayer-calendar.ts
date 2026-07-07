@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
             long,
             calcMethod = '2',
             asrMethod = '1',
-            alarm = '0',
             duration = '25',
             timezone = 'timezone',
             fajrDuration = duration,
@@ -55,6 +54,12 @@ export default defineEventHandler(async (event) => {
             maghribOffset = '0',
             ishaOffset = '0',
             jummahOffset = '0',
+            fajrAlarm = '0',
+            dhuhrAlarm = '0',
+            asrAlarm = '0',
+            maghribAlarm = '0',
+            ishaAlarm = '0',
+            jummahAlarm = '0',
             selectedPrayers
         } = query;
 
@@ -123,6 +128,14 @@ export default defineEventHandler(async (event) => {
             'Isha': Number(ishaOffset)
         };
 
+        const prayerAlarms = {
+            'Fajr': Number(fajrAlarm),
+            'Dhuhr': Number(dhuhrAlarm),
+            'Asr': Number(asrAlarm),
+            'Maghrib': Number(maghribAlarm),
+            'Isha': Number(ishaAlarm)
+        };
+
         if (selectedPrayers && typeof selectedPrayers === 'string') {
             const prayerNames = selectedPrayers.split(',');
             if (prayerNames.length > 0) {
@@ -143,14 +156,18 @@ export default defineEventHandler(async (event) => {
                         // Determine the duration and offset based on prayer name and day
                         let prayerDuration;
                         let prayerOffset;
+                        let prayerAlarm;
                         if (name === 'Dhuhr' && dayName === 'Friday') {
                             prayerDuration = Number(jummahDuration);
                             prayerOffset = Number(jummahOffset);
+                            prayerAlarm = Number(jummahAlarm);
                         } else {
                             //@ts-ignore
                             prayerDuration = prayerDurations[name];
                             //@ts-ignore
                             prayerOffset = prayerOffsets[name];
+                            //@ts-ignore
+                            prayerAlarm = prayerAlarms[name];
                         }
 
                         const startDate = createValidDate(dateStr, String(timeStr));
@@ -176,10 +193,10 @@ export default defineEventHandler(async (event) => {
                             busystatus: ICalEventBusyStatus.BUSY,
                             transparency: ICalEventTransparency.OPAQUE,
                         });
-                        if (Number(alarm) > 0) {
+                        if (prayerAlarm > 0) {
                             event.createAlarm({
                                 type: ICalAlarmType.audio,
-                                triggerBefore: Number(alarm) * 60,
+                                triggerBefore: prayerAlarm * 60,
                             });
                         }
                     } catch (err) {
