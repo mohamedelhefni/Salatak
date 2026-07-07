@@ -408,6 +408,7 @@ export const usePrayersStore = defineStore('prayers', {
             const colorKey = isJummah ? 'Jummah' : pray.name
             const backgroundColor = prayerConfig.color || prayerColors[colorKey] || '#6B7280'
 
+            const remainder = Number(prayerConfig.remainder) || 0
             events.push({
               title: `${prayerConfig.emoji || '🕋'} ${t(prayName)}`,
               start: prayDateStart,
@@ -417,7 +418,10 @@ export const usePrayersStore = defineStore('prayers', {
               textColor: '#FFFFFF',
               color: backgroundColor,  // This sets the overall color
               className: 'prayer-event',
-              display: 'block'
+              display: 'block',
+              alarms: remainder > 0
+                ? [{ action: 'display', description: prayName, trigger: { minutes: remainder, before: true } }]
+                : undefined,
             })
           })
         })
