@@ -1,0 +1,2 @@
+[build.environment]
+  NITRO_PRESET = "netlify"
