@@ -1,0 +1,7 @@
+allowBuilds:
+  '@intlify/vue-i18n-bridge': true
+  '@intlify/vue-router-bridge': true
+  core-js: true
+  esbuild: true
+  fast-folder-size: true
+  vue-demi: true

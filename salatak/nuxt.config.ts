@@ -28,7 +28,8 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'ar'],
-    vueI18n: './i18n.config.ts' // if you are using custom path, default 
+    restructureDir: false,
+    vueI18n: './i18n.config.ts'
   },
   app: {
     head: {
