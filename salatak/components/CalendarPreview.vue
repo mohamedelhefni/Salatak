@@ -87,9 +87,8 @@ watch(locale, () => {
 })
 
 watch([timings, prayers], () => {
-  let mappedEvents = mapTimingsToEvents(timings.value, t)
-  //@ts-ignore
-  calendarOptions.value.events = mappedEvents
+  const mappedEvents = mapTimingsToEvents(timings.value, t)
+  calendarOptions.value = { ...calendarOptions.value, events: mappedEvents }
   setEvents(mappedEvents)
 }, { deep: true })
 
