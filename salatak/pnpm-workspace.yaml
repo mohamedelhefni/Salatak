@@ -6,3 +6,5 @@ allowBuilds:
   fast-folder-size: true
   vue-demi: true
   '@parcel/watcher': true
+minimumReleaseAgeExclude:
+  - '@hefni101/siraaj@2.0.0'
