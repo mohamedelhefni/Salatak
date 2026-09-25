@@ -1,217 +1,47 @@
-<template>
-  <div class="form-control w-full">
-    <label class="label py-1">
-      <span class="label-text text-xs">{{ $t("Location") }}</span>
-    </label>
-    
-    <!-- Location method tabs - compact -->
-    <div class="tabs tabs-boxed mb-2 text-xs">
-      <button 
-        v-for="method in locationMethods" 
-        :key="method.key"
-        @click="activeMethod = method.key"
-        :class="['tab tab-sm', { 'tab-active': activeMethod === method.key }]"
-      >
-        <IconsMapPin v-if="method.key === 'geolocation'" class="w-3 h-3 mr-1" />
-        <IconsSearch v-else-if="method.key === 'address'" class="w-3 h-3 mr-1" />
-        <IconsMapPin v-else-if="method.key === 'map'" class="w-3 h-3 mr-1" />
-        <IconsCoordinates v-else-if="method.key === 'coordinates'" class="w-3 h-3 mr-1" />
-        <span class="hidden sm:inline">{{ $t(method.label) }}</span>
-      </button>
-    </div>
-
-    <!-- Geolocation method -->
-    <div v-if="activeMethod === 'geolocation'" class="space-y-2">
-      <div class="join w-full relative">
-        <input 
-          type="text" 
-          :placeholder="$t('Address')" 
-          :value="location.address"
-          class="input input-sm input-bordered join-item flex-1"
-          readonly
-        />
-        <button 
-          @click="getCurrentLocation()" 
-          :class="['btn btn-sm btn-primary join-item', { 'pulse-animation': !location.lat && !loadingLocation }]"
-          :disabled="loadingLocation"
-          :title="$t('Click to get your location')"
-        >
-          <span v-if="loadingLocation" class="loading loading-spinner loading-xs"></span>
-          <IconsMapPin v-else class="w-4 h-4" />
-        </button>
-        <!-- Pointer/Arrow hint -->
-        <div v-if="!location.lat && !loadingLocation" class="pointer-hint">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3" />
-          </svg>
-        </div>
-      </div>
-      <div v-if="!location.lat" class="text-xs text-center text-primary font-medium animate-pulse">
-        {{ $t("👆 Click the location button to get started") }}
-      </div>
-    </div>
-
-    <!-- Address search method -->
-    <div v-if="activeMethod === 'address'" class="space-y-2">
-      <div class="relative">
-        <input 
-          v-model="addressQuery"
-          @input="searchAddresses"
-          @focus="showSuggestions = true"
-          type="text" 
-          :placeholder="$t('Enter your address or city name')"
-          class="input input-sm input-bordered w-full"
-        />
-        
-        <!-- Address suggestions -->
-        <div 
-          v-if="showSuggestions && addressSuggestions.length > 0"
-          class="absolute z-10 w-full mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
-        >
-          <button
-            v-for="(suggestion, index) in addressSuggestions"
-            :key="index"
-            @click="selectAddress(suggestion)"
-            class="w-full text-left px-3 py-2 hover:bg-base-200 border-b border-base-300 last:border-b-0 text-sm"
-          >
-            <div class="font-medium truncate">{{ suggestion.display_name }}</div>
-            <div class="text-xs text-gray-500">
-              {{ suggestion.lat }}, {{ suggestion.lon }}
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Coordinates method -->
-    <div v-if="activeMethod === 'coordinates'" class="space-y-2">
-      <div class="grid grid-cols-2 gap-2">
-        <div class="form-control">
-          <input 
-            v-model.number="manualCoords.lat"
-            @blur="validateAndSetCoordinates"
-            type="number"
-            step="any"
-            :placeholder="$t('Latitude')"
-            class="input input-xs input-bordered"
-          />
-        </div>
-        <div class="form-control">
-          <input 
-            v-model.number="manualCoords.lon"
-            @blur="validateAndSetCoordinates"
-            type="number"
-            step="any"
-            :placeholder="$t('Longitude')"
-            class="input input-xs input-bordered"
-          />
-        </div>
-      </div>
-      <button 
-        @click="validateAndSetCoordinates"
-        class="btn btn-xs btn-secondary w-full"
-        :disabled="!manualCoords.lat || !manualCoords.lon"
-      >
-        {{ $t("Set Location") }}
-      </button>
-    </div>
-
-    <!-- Map picker method -->
-    <div v-if="activeMethod === 'map'" class="space-y-2">
-      <button 
-        @click="showMapModal = true"
-        class="btn btn-sm btn-primary w-full"
-      >
-        <IconsMapPin class="w-4 h-4" />
-        {{ $t("Open Map") }}
-      </button>
-    </div>
-
-    <!-- Map Modal -->
-    <div v-if="showMapModal" class="modal modal-open">
-      <div class="modal-box w-11/12 max-w-5xl h-5/6 max-h-[90vh] flex flex-col p-0">
-        <div class="flex justify-between items-center p-6 pb-4 flex-shrink-0">
-          <h3 class="font-bold text-lg">{{ $t("Select Your Location") }}</h3>
-          <button 
-            @click="showMapModal = false"
-            class="btn btn-sm btn-circle btn-ghost"
-          >
-            ✕
-          </button>
-        </div>
-        
-        <div class="flex-1 px-6 pb-4 min-h-0">
-          <MapPicker 
-            ref="mapPickerRef"
-            :latitude="location.lat || 51.505"
-            :longitude="location.long || -0.09"
-            @location-selected="onLocationSelectedFromMap"
-          />
-        </div>
-        
-        <div class="modal-action px-6 pb-6 flex-shrink-0 mt-0">
-          <button @click="showMapModal = false" class="btn">
-            {{ $t("Close") }}
-          </button>
-        </div>
-      </div>
-      <div class="modal-backdrop" @click="showMapModal = false"></div>
-    </div>
-
-    <!-- Current location display - compact badge -->
-    <div v-if="location.lat && location.long" class="mt-2">
-      <div class="badge badge-success badge-sm gap-1 w-full py-3 text-xs truncate">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="truncate">{{ location.address || `${location.lat?.toFixed(2)}, ${location.long?.toFixed(2)}` }}</span>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { usePrayersStore } from '~/stores/prayersStore';
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 
 const prayersStore = usePrayersStore();
 const { location } = storeToRefs(prayersStore);
 const { t } = useI18n();
+const toast = useToast();
 
-// Location input methods
-const locationMethods = ref([
-  { key: 'geolocation', label: 'Use Current Location', icon: 'IconsMapPin' },
-  { key: 'address', label: 'Search Address', icon: 'IconsSearch' },
-  { key: 'map', label: 'Pick on Map', icon: 'IconsMapPin' },
-  { key: 'coordinates', label: 'Enter Coordinates', icon: 'IconsCoordinates' },
+const locationMethods = computed(() => [
+  { value: 'geolocation', label: t('Use Current Location'), icon: 'i-lucide-locate-fixed' },
+  { value: 'address', label: t('Search Address'), icon: 'i-lucide-search' },
+  { value: 'map', label: t('Pick on Map'), icon: 'i-lucide-map' },
+  { value: 'coordinates', label: t('Enter Coordinates'), icon: 'i-lucide-crosshair' },
 ]);
 
 const activeMethod = ref('geolocation');
 const loadingLocation = ref(false);
 const showMapModal = ref(false);
-const mapPickerRef = ref<any>(null);
+
+const hasLocation = computed(() => location.value.lat != undefined && location.value.long != undefined);
+const locationLabel = computed(() => location.value.address || `${location.value.lat?.toFixed(4)}, ${location.value.long?.toFixed(4)}`);
+
+const showError = (title: string) => toast.add({ title, color: 'error', icon: 'i-lucide-circle-alert' });
 
 // Address search
 const addressQuery = ref('');
 const addressSuggestions = ref<any[]>([]);
-const showSuggestions = ref(false);
-let searchTimeout: NodeJS.Timeout | null = null;
+const searching = ref(false);
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Manual coordinates
 const manualCoords = ref({
-  lat: null as number | null,
-  lon: null as number | null
+  lat: undefined as number | undefined,
+  lon: undefined as number | undefined
 });
 
-// Get current geolocation
-const getCurrentLocation = async () => {
+const getCurrentLocation = () => {
   if (!navigator.geolocation) {
-    alert(t("Geolocation is not supported by this browser."));
+    showError(t("Geolocation is not supported by this browser."));
     return;
   }
 
   loadingLocation.value = true;
-  
+
   navigator.geolocation.getCurrentPosition(
     async (position) => {
       prayersStore.setLocation({
@@ -219,20 +49,19 @@ const getCurrentLocation = async () => {
         long: position.coords.longitude,
         address: ''
       });
-      
-      // Try to get address from reverse geocoding
+
       try {
         await prayersStore.reverseGeocoding();
       } catch (error) {
         console.warn('Reverse geocoding failed:', error);
       }
-      
+
       loadingLocation.value = false;
     },
     (error) => {
       console.error('Geolocation error:', error);
       let message = t("Unable to get your location.");
-      
+
       switch (error.code) {
         case error.PERMISSION_DENIED:
           message = t("Location access denied. Please allow location access or use another method.");
@@ -244,8 +73,8 @@ const getCurrentLocation = async () => {
           message = t("Location request timed out.");
           break;
       }
-      
-      alert(message);
+
+      showError(message);
       loadingLocation.value = false;
     },
     {
@@ -257,168 +86,170 @@ const getCurrentLocation = async () => {
 };
 
 // Search addresses using Nominatim
-const searchAddresses = () => {
-  if (searchTimeout) {
-    clearTimeout(searchTimeout);
-  }
-  
-  if (!addressQuery.value || addressQuery.value.length < 3) {
+watch(addressQuery, (query) => {
+  if (searchTimeout) clearTimeout(searchTimeout);
+
+  if (!query || query.length < 3) {
     addressSuggestions.value = [];
     return;
   }
-  
+
   searchTimeout = setTimeout(async () => {
+    searching.value = true;
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressQuery.value)}&limit=5&addressdetails=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`
       );
-      const data = await response.json();
-      addressSuggestions.value = data;
+      addressSuggestions.value = await response.json();
     } catch (error) {
       console.error('Address search error:', error);
       addressSuggestions.value = [];
+    } finally {
+      searching.value = false;
     }
   }, 300);
-};
+});
 
-// Select an address from suggestions
 const selectAddress = (suggestion: any) => {
   prayersStore.setLocation({
     lat: parseFloat(suggestion.lat),
     long: parseFloat(suggestion.lon),
     address: suggestion.display_name
   });
-  
-  addressQuery.value = suggestion.display_name;
   addressSuggestions.value = [];
-  showSuggestions.value = false;
 };
 
-// Validate and set manual coordinates
 const validateAndSetCoordinates = () => {
-  if (!manualCoords.value.lat || !manualCoords.value.lon) {
+  const { lat, lon } = manualCoords.value;
+  if (lat == undefined || lon == undefined || isNaN(lat) || isNaN(lon)) {
+    showError(t("Please enter valid numbers for coordinates"));
     return;
   }
-  
-  const lat = Number(manualCoords.value.lat);
-  const lon = Number(manualCoords.value.lon);
-  
-  if (isNaN(lat) || isNaN(lon)) {
-    alert(t("Please enter valid numbers for coordinates"));
-    return;
-  }
-  
   if (lat < -90 || lat > 90) {
-    alert(t("Latitude must be between -90 and 90"));
+    showError(t("Latitude must be between -90 and 90"));
     return;
   }
-  
   if (lon < -180 || lon > 180) {
-    alert(t("Longitude must be between -180 and 180"));
+    showError(t("Longitude must be between -180 and 180"));
     return;
   }
-  
+
   prayersStore.setLocation({
-    lat: lat,
+    lat,
     long: lon,
     address: `${lat.toFixed(4)}, ${lon.toFixed(4)}`
   });
 };
 
-// Handle location selection from map
-const onLocationSelectedFromMap = (location: { lat: number, lng: number }) => {
+const onLocationSelectedFromMap = (picked: { lat: number, lng: number }) => {
   prayersStore.setLocation({
-    lat: location.lat,
-    long: location.lng,
-    address: `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
+    lat: picked.lat,
+    long: picked.lng,
+    address: `${picked.lat.toFixed(4)}, ${picked.lng.toFixed(4)}`
   });
-  showMapModal.value = false; // Close modal after selection
+  showMapModal.value = false;
 };
-
-// Watch for modal opening to fix map rendering
-watch(showMapModal, (isOpen) => {
-  if (isOpen) {
-    nextTick(() => {
-      setTimeout(() => {
-        if (mapPickerRef.value?.invalidateSize) {
-          mapPickerRef.value.invalidateSize();
-        }
-      }, 100);
-      setTimeout(() => {
-        if (mapPickerRef.value?.invalidateSize) {
-          mapPickerRef.value.invalidateSize();
-        }
-      }, 300);
-      setTimeout(() => {
-        if (mapPickerRef.value?.invalidateSize) {
-          mapPickerRef.value.invalidateSize();
-        }
-      }, 600);
-    });
-  }
-});
-
-// Hide suggestions when clicking outside
-const handleClickOutside = (event: Event) => {
-  const target = event.target as HTMLElement;
-  if (!target.closest('.relative')) {
-    showSuggestions.value = false;
-  }
-};
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
-});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
-  if (searchTimeout) {
-    clearTimeout(searchTimeout);
-  }
+  if (searchTimeout) clearTimeout(searchTimeout);
 });
 </script>
 
-<style scoped>
-/* Pulse animation for geolocation button */
-.pulse-animation {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-}
+<template>
+  <div class="space-y-4">
+    <UTabs
+      v-model="activeMethod"
+      :items="locationMethods"
+      :content="false"
+      size="sm"
+      class="w-full"
+      :ui="{ label: 'hidden sm:inline' }"
+    />
 
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-  }
-}
+    <!-- Current location -->
+    <div v-if="activeMethod === 'geolocation'">
+      <UButton
+        block
+        size="xl"
+        icon="i-lucide-locate-fixed"
+        :loading="loadingLocation"
+        :variant="hasLocation ? 'soft' : 'solid'"
+        :label="$t(hasLocation ? 'Update my location' : 'Use my current location')"
+        @click="getCurrentLocation"
+      />
+    </div>
 
-/* Pointer hint styling */
-.pointer-hint {
-  position: absolute;
-  right: -2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: oklch(var(--p));
-  animation: bounce 1s infinite;
-  pointer-events: none;
-  z-index: 10;
-}
+    <!-- Address search -->
+    <div v-else-if="activeMethod === 'address'" class="space-y-2">
+      <UInput
+        v-model="addressQuery"
+        icon="i-lucide-search"
+        size="lg"
+        :loading="searching"
+        :placeholder="$t('Enter your address or city name')"
+        class="w-full"
+      />
+      <ul v-if="addressSuggestions.length" class="divide-y divide-default overflow-hidden rounded-md border border-default">
+        <li v-for="(suggestion, index) in addressSuggestions" :key="index">
+          <button
+            type="button"
+            class="w-full px-3 py-2.5 text-start hover:bg-elevated focus-visible:bg-elevated focus-visible:outline-none"
+            @click="selectAddress(suggestion)"
+          >
+            <span class="block truncate text-sm font-medium">{{ suggestion.display_name }}</span>
+            <span class="block text-xs text-muted" dir="ltr">{{ suggestion.lat }}, {{ suggestion.lon }}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(-50%) translateX(0);
-  }
-  50% {
-    transform: translateY(-50%) translateX(5px);
-  }
-}
+    <!-- Map picker -->
+    <div v-else-if="activeMethod === 'map'">
+      <UModal
+        v-model:open="showMapModal"
+        :title="$t('Select Your Location')"
+        :description="$t('Click on the map to select your location')"
+        :ui="{ content: 'sm:max-w-3xl' }"
+      >
+        <UButton block size="xl" icon="i-lucide-map" :label="$t('Open Map')" />
+        <template #body>
+          <MapPicker
+            :latitude="location.lat || 51.505"
+            :longitude="location.long || -0.09"
+            @location-selected="onLocationSelectedFromMap"
+          />
+        </template>
+      </UModal>
+    </div>
 
-/* Hide pointer hint on mobile to avoid overlap */
-@media (max-width: 640px) {
-  .pointer-hint {
-    display: none;
-  }
-}
-</style>
+    <!-- Coordinates -->
+    <form v-else class="space-y-3" @submit.prevent="validateAndSetCoordinates">
+      <div class="grid grid-cols-2 gap-3">
+        <UFormField :label="$t('Latitude')">
+          <UInput v-model.number="manualCoords.lat" type="number" step="any" placeholder="21.4225" dir="ltr" class="w-full" />
+        </UFormField>
+        <UFormField :label="$t('Longitude')">
+          <UInput v-model.number="manualCoords.lon" type="number" step="any" placeholder="39.8262" dir="ltr" class="w-full" />
+        </UFormField>
+      </div>
+      <UButton
+        type="submit"
+        block
+        color="neutral"
+        variant="subtle"
+        :disabled="manualCoords.lat == undefined || manualCoords.lon == undefined"
+        :label="$t('Set Location')"
+      />
+    </form>
+
+    <UAlert
+      v-if="hasLocation"
+      color="success"
+      variant="subtle"
+      icon="i-lucide-circle-check"
+      :title="$t('Location set')"
+      :description="locationLabel"
+      :ui="{ description: 'truncate' }"
+    />
+  </div>
+</template>

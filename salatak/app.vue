@@ -1,20 +1,30 @@
 <script setup lang="ts">
-import { useUiStore } from '~/stores/uiStore';
-const uiStore = useUiStore()
+import { ar, en } from '@nuxt/ui/locale'
+
+const { locale } = useI18n()
+const uiLocale = computed(() => (locale.value === 'ar' ? ar : en))
+
+useHead({
+  htmlAttrs: {
+    lang: () => uiLocale.value.code,
+    dir: () => uiLocale.value.dir
+  }
+})
 
 // Identify user on app mount for PostHog tracking
 onMounted(() => {
   const { identifyUser } = usePostHog()
   identifyUser()
 })
-
 </script>
-<template >
-  <div :data-theme="uiStore.theme" class="min-h-screen w-full flex flex-col bg-base-100"
-    :dir="$i18n.locale == 'ar' ? 'rtl' : 'ltr'">
-    <Navbar />
-    <div class="flex-1 overflow-y-auto">
-      <TheApp />
+
+<template>
+  <UApp :locale="uiLocale" :toaster="{ position: 'top-center' }">
+    <div class="min-h-dvh flex flex-col bg-default">
+      <Navbar />
+      <main class="flex-1">
+        <TheApp />
+      </main>
     </div>
-  </div>
+  </UApp>
 </template>

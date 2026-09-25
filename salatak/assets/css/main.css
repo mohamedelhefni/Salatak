@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Inter', 'Noto Sans Arabic', sans-serif;
+}
+
+/* iOS zooms into inputs smaller than 16px */
+@media (max-width: 639px) {
+  input, select, textarea { font-size: 16px !important; }
+}

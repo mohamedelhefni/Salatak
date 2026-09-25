@@ -63,8 +63,20 @@ export const usePostHog = () => {
     })
   }
 
+  // Track which wizard step the user reached (for a funnel in PostHog)
+  const trackStep = (step: string, stepNumber: number) => {
+    if (!posthogClient) return
+
+    posthogClient.capture('wizard_step_viewed', {
+      step,
+      step_number: stepNumber,
+      user_id: getUserId()
+    })
+  }
+
   return {
     identifyUser,
+    trackStep,
     trackCalendarPreview,
     trackCalendarDownload,
     trackUrlCopy,

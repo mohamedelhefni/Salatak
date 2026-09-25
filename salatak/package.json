@@ -9,14 +9,10 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "@nuxtjs/i18n": "9.5.6",
-    "@nuxtjs/tailwindcss": "^6.8.0",
-    "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
-    "@pinia/nuxt": "^0.4.11",
+    "@nuxtjs/i18n": "10.6.0",
+    "@pinia/nuxt": "^1.0.2",
     "@types/node": "^18.17.1",
-    "daisyui": "^3.9.4",
-    "nuxt": "^3.6.5"
+    "nuxt": "^4.5.2"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.8",
@@ -25,13 +21,18 @@
     "@fullcalendar/timegrid": "^6.1.19",
     "@fullcalendar/vue3": "^6.1.8",
     "@hefni101/siraaj": "^1.0.0",
+    "@iconify-json/lucide": "^1.2.136",
+    "@iconify-json/simple-icons": "^1.2.97",
+    "@nuxt/ui": "^4.11.2",
     "@types/leaflet": "^1.9.20",
     "@vercel/analytics": "^1.4.1",
     "date-fns": "^2.30.0",
     "ical-generator": "^8.1.1",
     "ics": "^3.4.0",
     "leaflet": "^1.9.4",
-    "pinia": "^2.3.1",
-    "posthog-js": "^1.266.0"
+    "pinia": "^4.0.3",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "posthog-js": "^1.266.0",
+    "tailwindcss": "^4.3.3"
   }
 }
