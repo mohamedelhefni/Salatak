@@ -74,21 +74,9 @@ export const usePostHog = () => {
     })
   }
 
-  // Track the feedback left at the end of the wizard
-  const trackFeedback = (rating: number, comment: string) => {
-    if (!posthogClient) return
-
-    posthogClient.capture('feedback_submitted', {
-      rating,
-      comment,
-      user_id: getUserId()
-    })
-  }
-
   return {
     identifyUser,
     trackStep,
-    trackFeedback,
     trackCalendarPreview,
     trackCalendarDownload,
     trackUrlCopy,

@@ -158,7 +158,6 @@ onMounted(() => {
             {{ $t("Download Calendar") }}
           </button>
           <CalendarPreview />
-          <FeedbackCard />
         </div>
 
         <!-- Navigation -->

@@ -227,10 +227,6 @@ export default defineI18nConfig(() => ({
       "step_calendar_hint": "Download the file, or copy the calendar link to subscribe so it stays up to date.",
       "Set your location to continue": "Set your location to continue",
       "failed_to_copy": "Failed to copy",
-      "How was your experience?": "How was your experience?",
-      "Tell us more (optional)": "Tell us more (optional)",
-      "Send Feedback": "Send Feedback",
-      "Thanks for your feedback!": "Thanks for your feedback!",
     },
     ar: {
       "welcome": "اهلا",
@@ -457,10 +453,6 @@ export default defineI18nConfig(() => ({
       "step_calendar_hint": "حمّل الملف، أو انسخ رابط التقويم للاشتراك فيه ليبقى محدثاً دائماً.",
       "Set your location to continue": "حدد موقعك للمتابعة",
       "failed_to_copy": "فشل النسخ",
-      "How was your experience?": "كيف كانت تجربتك؟",
-      "Tell us more (optional)": "أخبرنا المزيد (اختياري)",
-      "Send Feedback": "إرسال الملاحظات",
-      "Thanks for your feedback!": "شكراً على ملاحظاتك!",
     }
   }
 }))
