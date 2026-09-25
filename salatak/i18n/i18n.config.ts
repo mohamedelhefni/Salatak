@@ -227,6 +227,15 @@ export default defineI18nConfig(() => ({
       "step_calendar_hint": "Download the file, or copy the calendar link to subscribe so it stays up to date.",
       "Set your location to continue": "Set your location to continue",
       "failed_to_copy": "Failed to copy",
+      "Couldn't load prayer times. Please check your connection and try again.": "Couldn't load prayer times. Please check your connection and try again.",
+      "End date should be greater than or equal to the start date": "End date should be greater than or equal to the start date",
+      "Invalid start date": "Invalid start date",
+      "Invalid end date": "Invalid end date",
+      "you must enter valid address": "you must enter valid address",
+      "Location set": "Location set",
+      "Use my current location": "Use my current location",
+      "Update my location": "Update my location",
+      "min": "min",
     },
     ar: {
       "welcome": "اهلا",
@@ -453,6 +462,15 @@ export default defineI18nConfig(() => ({
       "step_calendar_hint": "حمّل الملف، أو انسخ رابط التقويم للاشتراك فيه ليبقى محدثاً دائماً.",
       "Set your location to continue": "حدد موقعك للمتابعة",
       "failed_to_copy": "فشل النسخ",
+      "Couldn't load prayer times. Please check your connection and try again.": "تعذر تحميل مواقيت الصلاة. تحقق من اتصالك وحاول مرة أخرى.",
+      "End date should be greater than or equal to the start date": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية أو مساوياً له",
+      "Invalid start date": "تاريخ البداية غير صالح",
+      "Invalid end date": "تاريخ النهاية غير صالح",
+      "you must enter valid address": "يجب إدخال عنوان صالح",
+      "Location set": "تم تحديد الموقع",
+      "Use my current location": "استخدم موقعي الحالي",
+      "Update my location": "تحديث موقعي",
+      "min": "دقيقة",
     }
   }
 }))

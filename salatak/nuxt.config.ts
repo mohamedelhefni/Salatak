@@ -9,26 +9,21 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
+  compatibilityDate: '2026-09-25',
   modules: [
-    '@nuxtjs/tailwindcss',
+    '@nuxt/ui',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/i18n',
-
   ],
-  pinia: {
-    autoImports: [
-      // automatically imports `defineStore`
-      'defineStore', // import { defineStore } from 'pinia'
-      'storeToRefs',
-
-      ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
-    ],
+  css: ['~/assets/css/main.css'],
+  colorMode: {
+    preference: 'dark',
   },
   i18n: {
     defaultLocale: 'en',
+    strategy: 'no_prefix',
     locales: ['en', 'ar'],
-    restructureDir: false,
     vueI18n: './i18n.config.ts'
   },
   app: {

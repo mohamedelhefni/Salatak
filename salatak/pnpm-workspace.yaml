@@ -5,3 +5,4 @@ allowBuilds:
   esbuild: true
   fast-folder-size: true
   vue-demi: true
+  '@parcel/watcher': true
