@@ -1,27 +1,35 @@
 <script setup lang="ts">
+import type { StepperItem } from '@nuxt/ui'
 import { usePrayersStore } from '~/stores/prayersStore';
 const prayersStore = usePrayersStore()
 const { location, calcMethod, asrMethod, loading, startDate, endDate, dateMode, rollingDuration } = storeToRefs(prayersStore)
 const { setCalcMethod, setAsrMethod, getPrayersTimings, downloadCalendar, setLoading, setStartDate, setEndDate, setDateMode, setRollingDuration } = prayersStore
 const { t } = useI18n()
-const { $toast } = useNuxtApp()
+const toast = useToast()
 
 const steps = [
-  { key: 'location', label: 'Location', title: 'Where are you?', hint: 'step_location_hint' },
-  { key: 'timing', label: 'Timing', title: 'How should times be calculated?', hint: 'step_timing_hint' },
-  { key: 'prayers', label: 'Prayers', title: 'Which prayers do you want?', hint: 'step_prayers_hint' },
-  { key: 'calendar', label: 'Calendar', title: 'Your calendar is ready', hint: 'step_calendar_hint' },
+  { key: 'location', label: 'Location', title: 'Where are you?', hint: 'step_location_hint', icon: 'i-lucide-map-pin' },
+  { key: 'timing', label: 'Timing', title: 'How should times be calculated?', hint: 'step_timing_hint', icon: 'i-lucide-clock' },
+  { key: 'prayers', label: 'Prayers', title: 'Which prayers do you want?', hint: 'step_prayers_hint', icon: 'i-lucide-list-checks' },
+  { key: 'calendar', label: 'Calendar', title: 'Your calendar is ready', hint: 'step_calendar_hint', icon: 'i-lucide-calendar-check' },
 ]
 const current = ref(0)
 const step = computed(() => steps[current.value])
 const hasLocation = computed(() => location.value.lat != undefined && location.value.long != undefined)
 const isLast = computed(() => current.value === steps.length - 1)
 
+// Every step after the first needs a location to be meaningful
+const stepperItems = computed<StepperItem[]>(() => steps.map((s, i) => ({
+  title: t(s.label),
+  icon: s.icon,
+  value: i,
+  disabled: i > 0 && !hasLocation.value,
+})))
+
 const goTo = (i: number) => {
   if (i < 0 || i >= steps.length) return
-  // Every step after the first needs a location to be meaningful
   if (i > 0 && !hasLocation.value) {
-    $toast.show(t('Set your location to continue'), 'error')
+    toast.add({ title: t('Set your location to continue'), color: 'error', icon: 'i-lucide-map-pin-off' })
     return
   }
   current.value = i
@@ -33,6 +41,18 @@ watch(current, (i) => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 
+const calcMethodItems = computed(() => prayersStore.calcMethods.map((m: any) => ({ label: t(m.name || ' '), value: m.id })))
+const calcMethodModel = computed({ get: () => calcMethod.value, set: (v) => setCalcMethod(Number(v)) })
+const asrItems = computed(() => [{ label: t('Shafi'), value: 0 }, { label: t('Hanafi'), value: 1 }])
+const asrModel = computed({ get: () => Number(asrMethod.value), set: (v) => setAsrMethod(Number(v)) })
+const dateModeItems = computed(() => [{ label: t('Rolling Duration'), value: 'rolling' }, { label: t('Fixed Dates'), value: 'fixed' }])
+const dateModeModel = computed({ get: () => dateMode.value, set: (v) => setDateMode(v) })
+const durationItems = computed(() => [3, 6, 12, 18, 24, 36].map(m => ({
+  label: m === 18 ? `${t(`${m} months`)} (${t('Recommended')})` : t(`${m} months`),
+  value: m,
+})))
+const durationModel = computed({ get: () => rollingDuration.value, set: (v) => setRollingDuration(Number(v)) })
+
 const startDateInput = computed(() => new Date(startDate.value).toISOString().slice(0, 7));
 const endDateInput = computed(() => new Date(endDate.value).toISOString().slice(0, 7));
 
@@ -43,7 +63,7 @@ const updateStartDate = (event: any) => {
 const updateEndDate = (event: any) => {
   const date = new Date(event.target.value + "-01");
   if (date < new Date(startDate.value)) {
-    alert("End date should be greater than or equal to the start date");
+    toast.add({ title: t('End date should be greater than or equal to the start date'), color: 'error' })
     setEndDate(new Date());
     return;
   }
@@ -58,131 +78,97 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6 max-w-3xl">
-    <!-- Header -->
-    <div class="text-center mb-4 md:mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold">{{ $t("salatak") }}</h1>
-      <p class="text-sm md:text-base text-base-content/70">{{ $t("schedule_prayers") }}</p>
-    </div>
+  <div class="mx-auto w-full max-w-3xl px-4 py-6 sm:py-10">
+    <header class="mb-6 text-center sm:mb-8">
+      <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">{{ $t("salatak") }}</h1>
+      <p class="mt-1 text-sm text-muted sm:text-base">{{ $t("schedule_prayers") }}</p>
+    </header>
 
-    <!-- Step indicator -->
-    <ul class="steps w-full mb-6">
-      <li v-for="(s, i) in steps" :key="s.key" :class="['step text-xs md:text-sm', { 'step-primary': i <= current }]">
-        <button type="button" class="disabled:cursor-default" :disabled="i === current" @click="goTo(i)">
-          {{ $t(s.label) }}
-        </button>
-      </li>
-    </ul>
+    <UStepper
+      :model-value="current"
+      :items="stepperItems"
+      :linear="false"
+      size="sm"
+      class="mb-6 w-full"
+      :ui="{ title: 'text-xs sm:text-sm', content: 'hidden' }"
+      @update:model-value="(v) => goTo(Number(v))"
+    />
 
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body p-4 md:p-6">
-        <h2 class="card-title text-lg md:text-xl">{{ $t(step.title) }}</h2>
-        <p class="text-sm text-base-content/70 mb-2">{{ $t(step.hint) }}</p>
+    <UCard :ui="{ body: 'p-4 sm:p-6', footer: 'p-4 sm:px-6' }">
+      <div class="mb-5">
+        <h2 class="text-lg font-semibold sm:text-xl">{{ $t(step.title) }}</h2>
+        <p class="mt-1 text-sm text-muted">{{ $t(step.hint) }}</p>
+      </div>
 
-        <!-- Step 1: Location -->
-        <div v-if="step.key === 'location'">
-          <LocationInput />
-        </div>
+      <!-- Step 1: Location -->
+      <LocationInput v-if="step.key === 'location'" />
 
-        <!-- Step 2: Calculation method and date range -->
-        <div v-else-if="step.key === 'timing'" class="space-y-3">
-          <div class="form-control">
-            <label class="label py-1">
-              <span class="label-text">{{ $t("Method of calculation") }}</span>
-            </label>
-            <select @change="(e: any) => setCalcMethod(Number(e.target.value))" class="select select-bordered w-full">
-              <option disabled :selected="!calcMethod">{{ $t("Select method") }}</option>
-              <option v-for="method in prayersStore.calcMethods" :key="method.id" :value="method.id" :selected="method.id == calcMethod">{{ $t(method.name || " ") }}</option>
-            </select>
-          </div>
+      <!-- Step 2: Calculation method and date range -->
+      <div v-else-if="step.key === 'timing'" class="space-y-5">
+        <UFormField :label="$t('Method of calculation')">
+          <USelect v-model="calcMethodModel" :items="calcMethodItems" :placeholder="$t('Select method')" class="w-full" />
+        </UFormField>
 
-          <div class="form-control">
-            <label class="label py-1">
-              <span class="label-text">{{ $t("Asr Calculation Method") }}</span>
-            </label>
-            <select @change="(e: any) => setAsrMethod(Number(e.target.value))" class="select select-bordered w-full">
-              <option :selected="asrMethod == 0" value="0">{{ $t("Shafi") }}</option>
-              <option :selected="asrMethod == 1" value="1">{{ $t("Hanafi") }}</option>
-            </select>
-          </div>
+        <UFormField :label="$t('Asr Calculation Method')">
+          <URadioGroup v-model="asrModel" :items="asrItems" orientation="horizontal" variant="table" indicator="hidden" />
+        </UFormField>
 
-          <div class="form-control">
-            <label class="label py-1">
-              <span class="label-text">{{ $t("Date Range Mode") }}</span>
-            </label>
-            <div class="flex gap-4">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="dateMode" class="radio radio-sm radio-primary" :checked="dateMode === 'rolling'" @change="setDateMode('rolling')" />
-                <span class="label-text">{{ $t("Rolling Duration") }}</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="dateMode" class="radio radio-sm radio-primary" :checked="dateMode === 'fixed'" @change="setDateMode('fixed')" />
-                <span class="label-text">{{ $t("Fixed Dates") }}</span>
-              </label>
-            </div>
-          </div>
+        <UFormField :label="$t('Date Range Mode')">
+          <URadioGroup v-model="dateModeModel" :items="dateModeItems" orientation="horizontal" variant="table" indicator="hidden" />
+        </UFormField>
 
-          <div v-if="dateMode === 'rolling'" class="form-control">
-            <select @change="(e: any) => setRollingDuration(Number(e.target.value))" class="select select-bordered w-full">
-              <option v-for="m in [3, 6, 12, 18, 24, 36]" :key="m" :selected="rollingDuration === m" :value="m">
-                {{ $t(`${m} months`) }}<template v-if="m === 18"> ({{ $t("Recommended") }})</template>
-              </option>
-            </select>
-            <label class="label py-0">
-              <span class="label-text-alt opacity-70">{{ $t("Automatically includes prayers from today") }}</span>
-            </label>
-          </div>
+        <UFormField v-if="dateMode === 'rolling'" :help="$t('Automatically includes prayers from today')">
+          <USelect v-model="durationModel" :items="durationItems" class="w-full" />
+        </UFormField>
 
-          <div v-else class="grid grid-cols-2 gap-2">
-            <div class="form-control">
-              <label class="label py-1"><span class="label-text">{{ $t("start_date") }}</span></label>
-              <input type="month" class="input input-bordered" :value="startDateInput" @change="updateStartDate" />
-            </div>
-            <div class="form-control">
-              <label class="label py-1"><span class="label-text">{{ $t("end_date") }}</span></label>
-              <input type="month" class="input input-bordered" :value="endDateInput" @change="updateEndDate" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 3: Prayers -->
-        <div v-else-if="step.key === 'prayers'">
-          <PrayersInput />
-        </div>
-
-        <!-- Step 4: Get the calendar -->
-        <div v-else class="space-y-3">
-          <button class="btn btn-primary w-full" :disabled="loading" @click="downloadCalendar">
-            <span v-if="loading" class="loading loading-spinner"></span>
-            <IconsDownload v-else class="w-5 h-5" />
-            {{ $t("Download Calendar") }}
-          </button>
-          <CalendarPreview />
-        </div>
-
-        <!-- Navigation -->
-        <div class="card-actions justify-between mt-4">
-          <button v-if="current > 0" class="btn btn-ghost" @click="goTo(current - 1)">{{ $t("Previous") }}</button>
-          <span v-else></span>
-          <button v-if="!isLast" class="btn btn-primary" :disabled="step.key === 'location' && !hasLocation" @click="goTo(current + 1)">
-            {{ $t("Next") }}
-          </button>
+        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <UFormField :label="$t('start_date')">
+            <UInput type="month" :model-value="startDateInput" class="w-full" @change="updateStartDate" />
+          </UFormField>
+          <UFormField :label="$t('end_date')">
+            <UInput type="month" :model-value="endDateInput" class="w-full" @change="updateEndDate" />
+          </UFormField>
         </div>
       </div>
-    </div>
+
+      <!-- Step 3: Prayers -->
+      <PrayersInput v-else-if="step.key === 'prayers'" />
+
+      <!-- Step 4: Get the calendar -->
+      <div v-else class="space-y-4">
+        <UButton
+          block
+          size="lg"
+          icon="i-lucide-download"
+          :loading="loading"
+          :label="$t('Download Calendar')"
+          @click="downloadCalendar"
+        />
+        <CalendarPreview />
+      </div>
+
+      <template #footer>
+        <div class="flex items-center justify-between gap-2">
+          <UButton
+            v-if="current > 0"
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-arrow-left"
+            :ui="{ leadingIcon: 'rtl:rotate-180' }"
+            :label="$t('Previous')"
+            @click="goTo(current - 1)"
+          />
+          <span v-else />
+          <UButton
+            v-if="!isLast"
+            trailing-icon="i-lucide-arrow-right"
+            :ui="{ trailingIcon: 'rtl:rotate-180' }"
+            :disabled="step.key === 'location' && !hasLocation"
+            :label="$t('Next')"
+            @click="goTo(current + 1)"
+          />
+        </div>
+      </template>
+    </UCard>
   </div>
-
-  <Toast />
 </template>
-
-<style scoped>
-/* Prevent zoom on input focus (iOS) */
-@media (max-width: 639px) {
-  input[type="text"],
-  input[type="number"],
-  input[type="month"],
-  select {
-    font-size: 16px !important;
-  }
-}
-</style>

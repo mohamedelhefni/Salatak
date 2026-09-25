@@ -10,7 +10,7 @@ const prayersStore = usePrayersStore()
 const { locale, t } = useI18n()
 const { subscribeURL, timings, prayers } = storeToRefs(prayersStore)
 const { setEvents, mapTimingsToEvents } = prayersStore
-const { $toast } = useNuxtApp()
+const toast = useToast()
 
 // Detect screen size
 const isMobile = ref(false)
@@ -98,13 +98,13 @@ const copyToClipboard = () => {
     navigator.clipboard
       .writeText(subscribeURL.value)
       .then(() => {
-        $toast.show(t('text_copied_to_clipboard'), 'info');
+        toast.add({ title: t('text_copied_to_clipboard'), color: 'success', icon: 'i-lucide-check' });
         // Track copy URL event for PostHog survey trigger
         const { trackUrlCopy } = usePostHog()
         trackUrlCopy()
       })
       .catch((error) => {
-        $toast.show(t('failed_to_copy'), 'error');
+        toast.add({ title: t('failed_to_copy'), color: 'error' });
         console.error('Failed to copy:', error);
       });
   } else {
@@ -114,12 +114,12 @@ const copyToClipboard = () => {
     textArea.select();
     try {
       document.execCommand('copy');
-      $toast.show(t('text_copied_to_clipboard'), 'info');
+      toast.add({ title: t('text_copied_to_clipboard'), color: 'success', icon: 'i-lucide-check' });
       // Track copy URL event for PostHog survey trigger
       const { trackUrlCopy } = usePostHog()
       trackUrlCopy()
     } catch (error) {
-      $toast.show(t('failed_to_copy'), 'error');
+      toast.add({ title: t('failed_to_copy'), color: 'error' });
       console.error('Fallback copy failed:', error);
     }
     document.body.removeChild(textArea);
@@ -130,334 +130,123 @@ const copyToClipboard = () => {
 
 
 <template>
-  <div class="space-y-3">
-    <!-- Subscribe URL Card -->
-    <div v-if="subscribeURL != ''" class="card bg-base-200 shadow-xl">
-      <div class="card-body p-4">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold mb-1">📅 {{ $t("Calendar URL") }}</p>
-            <p class="text-xs truncate text-base-content/70">{{ subscribeURL }}</p>
-          </div>
-          <button 
-            @click="copyToClipboard"
-            class="btn btn-sm btn-primary btn-circle flex-shrink-0"
-            :title="$t('Copy to clipboard')"
-          >
-            <IconsClipboard class="w-4 h-4" />
-          </button>
-        </div>
+  <div class="space-y-4">
+    <!-- Subscribe URL -->
+    <div v-if="subscribeURL != ''" class="rounded-lg border border-default bg-elevated/50 p-3">
+      <p class="mb-2 flex items-center gap-1.5 text-sm font-medium">
+        <UIcon name="i-lucide-link" class="size-4 text-primary" />
+        {{ $t("Calendar URL") }}
+      </p>
+      <div class="flex items-center gap-2">
+        <UInput :model-value="subscribeURL" readonly dir="ltr" size="sm" class="min-w-0 flex-1" @focus="(e: any) => e.target.select()" />
+        <UButton icon="i-lucide-copy" size="sm" :label="$t('Copy to clipboard')" :ui="{ label: 'hidden sm:inline' }" @click="copyToClipboard" />
       </div>
     </div>
 
-    <!-- Calendar Card -->
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body p-2 sm:p-3 md:p-4">
-        <h2 class="card-title text-base sm:text-lg mb-3">📅 {{ $t("Calendar Preview") }}</h2>
-        <div class="calendar-wrapper bg-base-100 p-2 sm:p-3 rounded-lg border border-base-300">
-          <FullCalendar ref="calendarRef" :options="calendarOptions" />
-        </div>
+    <!-- Calendar -->
+    <div>
+      <h3 class="mb-2 flex items-center gap-1.5 text-sm font-medium">
+        <UIcon name="i-lucide-calendar-days" class="size-4 text-primary" />
+        {{ $t("Calendar Preview") }}
+      </h3>
+      <div class="calendar-wrapper overflow-hidden rounded-lg border border-default p-2 sm:p-3">
+        <FullCalendar ref="calendarRef" :options="calendarOptions" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+/* Map FullCalendar's theme variables onto Nuxt UI's so it follows light/dark mode */
 .calendar-wrapper {
-  @apply overflow-hidden;
+  --fc-border-color: var(--ui-border);
+  --fc-page-bg-color: var(--ui-bg);
+  --fc-neutral-bg-color: var(--ui-bg-elevated);
+  --fc-list-event-hover-bg-color: var(--ui-bg-elevated);
+  --fc-today-bg-color: color-mix(in oklab, var(--ui-primary) 12%, transparent);
+  --fc-button-bg-color: var(--ui-bg-elevated);
+  --fc-button-border-color: var(--ui-border);
+  --fc-button-text-color: var(--ui-text);
+  --fc-button-hover-bg-color: var(--ui-bg-accented);
+  --fc-button-hover-border-color: var(--ui-border-accented);
+  --fc-button-active-bg-color: var(--ui-primary);
+  --fc-button-active-border-color: var(--ui-primary);
+  color: var(--ui-text);
 }
 
-/* Calendar theme support */
-:deep(.fc) {
-  @apply bg-base-100 text-base-content;
-}
-
-:deep(.fc-theme-standard td),
-:deep(.fc-theme-standard th) {
-  @apply border-base-300;
-}
-
-:deep(.fc-scrollgrid) {
-  @apply border-base-300;
-}
-
-:deep(.fc-theme-standard .fc-scrollgrid) {
-  border-color: inherit;
-}
-
-/* Ensure event backgrounds render in all themes */
-:deep(.fc-h-event),
-:deep(.fc-v-event) {
-  background-color: var(--fc-event-bg-color) !important;
-  border-color: var(--fc-event-border-color) !important;
-}
-
-:deep(.fc-event .fc-event-main) {
-  color: var(--fc-event-text-color) !important;
-}
-
-/* Specific selectors for daygrid events */
-:deep(.fc-daygrid-event) {
-  background-color: var(--fc-event-bg-color) !important;
-  border-color: var(--fc-event-border-color) !important;
-}
-
-:deep(.fc-daygrid-event .fc-event-main) {
-  color: white !important;
-}
-
-:deep(.fc-daygrid-block-event) {
-  background-color: var(--fc-event-bg-color) !important;
-  border-color: var(--fc-event-border-color) !important;
-}
-
-:deep(.fc-daygrid-block-event .fc-event-title) {
-  color: white !important;
-}
-
-/* FullCalendar responsive styling */
 :deep(.fc) {
   font-family: inherit;
+  font-size: 0.8rem;
 }
 
-/* Mobile styles (< 768px) */
-@media (max-width: 767px) {
-  :deep(.fc) {
-    font-size: 0.7rem;
-  }
-
-  :deep(.fc-toolbar-title) {
-    font-size: 0.9rem !important;
-  }
-
-  :deep(.fc-button) {
-    padding: 0.25rem 0.4rem !important;
-    font-size: 0.7rem !important;
-  }
-
-  :deep(.fc-list-event-time) {
-    font-size: 0.7rem !important;
-  }
-
-  :deep(.fc-list-event-title) {
-    font-size: 0.75rem !important;
-  }
-
-  :deep(.fc-list-day-cushion) {
-    padding: 0.5rem !important;
-  }
+:deep(.fc-toolbar) {
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-/* Tablet styles (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  :deep(.fc) {
-    font-size: 0.8rem;
-  }
-
-  :deep(.fc-toolbar-title) {
-    font-size: 1rem !important;
-  }
-
-  :deep(.fc-button) {
-    padding: 0.3rem 0.5rem !important;
-    font-size: 0.8rem !important;
-  }
-
-  :deep(.fc-list-event-time) {
-    font-size: 0.8rem !important;
-  }
-
-  :deep(.fc-list-event-title) {
-    font-size: 0.85rem !important;
-  }
+:deep(.fc-toolbar-title) {
+  font-size: 1rem !important;
+  font-weight: 600;
 }
 
-/* Desktop styles (>= 1024px) */
-@media (min-width: 1024px) {
-  :deep(.fc) {
-    font-size: 0.875rem;
-  }
-
-  :deep(.fc-toolbar-title) {
-    font-size: 1.125rem !important;
-  }
+:deep(.fc-button) {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.8rem !important;
+  border-radius: calc(var(--ui-radius) * 1.5) !important;
+  box-shadow: none !important;
 }
 
-/* List view enhancements */
+:deep(.fc-button-active) {
+  color: var(--ui-text-inverted) !important;
+}
+
+:deep(.fc-col-header-cell) {
+  padding: 0.4rem 0.25rem;
+  font-weight: 600;
+}
+
 :deep(.fc-list-day-cushion) {
-  @apply bg-base-200 text-base-content;
-  @apply font-semibold;
+  font-weight: 600;
 }
 
-:deep(.fc-list-event) {
-  @apply border-base-300;
-  background-color: transparent;
+:deep(.fc-more-link) {
+  color: var(--ui-primary);
+  font-weight: 500;
+  font-size: 0.7rem;
 }
 
-:deep(.fc-list-event:hover) {
-  @apply bg-base-200/50;
+:deep(.fc-event) {
+  cursor: default;
+  border-inline-start-width: 4px !important;
 }
 
-/* Non-prayer events in list view */
-:deep(.fc-list-event-time):not(.prayer-event .fc-list-event-time) {
-  @apply text-base-content/70;
-}
-
-:deep(.fc-list-event-title):not(.prayer-event .fc-list-event-title) {
-  @apply text-base-content;
-}
-
-:deep(.fc-list-event-dot) {
-  border-color: inherit !important;
-}
-
-/* List view colored backgrounds for prayer events */
+/* Prayer events carry their own colour; keep text readable on it */
+:deep(.fc-event.prayer-event),
 :deep(.fc-list-event.prayer-event) {
   background-color: var(--fc-event-bg-color) !important;
-  border-left-width: 4px !important;
-  border-left-color: var(--fc-event-border-color) !important;
-}
-
-:deep(.fc-list-event.prayer-event .fc-list-event-graphic) {
-  background-color: transparent !important;
+  border-color: var(--fc-event-border-color) !important;
 }
 
 :deep(.fc-list-event.prayer-event td) {
   background-color: inherit !important;
 }
 
-/* Event styling */
-:deep(.fc-event) {
-  @apply cursor-default;
-  border-left-width: 4px !important;
-}
-
-/* Prayer events with colored backgrounds */
-:deep(.fc-event.prayer-event) {
-  /* Ensure background color is applied */
-  opacity: 1 !important;
-}
-
-:deep(.fc-event.prayer-event .fc-event-main) {
-  color: white !important;
-}
-
-/* Force white text on colored event backgrounds in all views */
+:deep(.prayer-event .fc-event-main),
 :deep(.prayer-event .fc-event-title),
 :deep(.prayer-event .fc-event-time),
-:deep(.prayer-event .fc-daygrid-event-dot),
-:deep(.fc-event.prayer-event .fc-event-title-container),
-:deep(.fc-event.prayer-event .fc-event-time) {
-  color: white !important;
-  font-weight: 500;
-}
-
-:deep(.fc-daygrid-event.prayer-event) {
-  background-color: var(--fc-event-bg-color) !important;
-  border-color: var(--fc-event-border-color) !important;
-}
-
-:deep(.fc-timegrid-event.prayer-event) {
-  background-color: var(--fc-event-bg-color) !important;
-  border-color: var(--fc-event-border-color) !important;
-}
-
-/* List view prayer events */
 :deep(.prayer-event .fc-list-event-title),
 :deep(.prayer-event .fc-list-event-time) {
   color: white !important;
   font-weight: 500;
 }
 
-:deep(.fc-daygrid-day-number) {
-  padding: 0.25rem;
-  color: inherit;
-}
-
-:deep(.fc-daygrid-day) {
-  background-color: transparent;
-}
-
-:deep(.fc-day-today) {
-  @apply bg-primary/10 !important;
-}
-
-:deep(.fc-daygrid-day-frame) {
-  background-color: transparent;
-}
-
-/* Ensure proper text contrast */
-:deep(.fc-daygrid-day-top) {
-  color: inherit;
-}
-
-/* Header styling */
-:deep(.fc-col-header) {
-  @apply bg-base-200 text-base-content;
-}
-
-:deep(.fc-col-header-cell) {
-  @apply font-semibold border-base-300;
-  padding: 0.5rem 0.25rem;
-}
-
-:deep(.fc-col-header-cell-cushion) {
-  @apply text-base-content;
-}
-
-/* More link styling */
-:deep(.fc-more-link) {
-  @apply text-primary;
-  @apply font-medium;
-  font-size: 0.7rem;
-}
-
-/* Toolbar responsiveness */
-:deep(.fc-toolbar) {
-  @apply flex-wrap;
-  gap: 0.5rem;
-}
-
-:deep(.fc-toolbar-title) {
-  @apply text-base-content;
-}
-
-:deep(.fc-button) {
-  @apply bg-base-200 text-base-content border-base-300;
-}
-
-:deep(.fc-button:hover) {
-  @apply bg-base-300;
-}
-
-:deep(.fc-button-primary) {
-  background-color: oklch(var(--p)) !important;
-  border-color: oklch(var(--p)) !important;
-  color: oklch(var(--pc)) !important;
-}
-
-:deep(.fc-button-primary:hover) {
-  background-color: oklch(var(--p)) !important;
-  filter: brightness(0.9);
-}
-
-:deep(.fc-button-primary:disabled) {
-  opacity: 0.6;
-}
-
-:deep(.fc-button-active) {
-  background-color: oklch(var(--p)) !important;
-  border-color: oklch(var(--p)) !important;
-  color: oklch(var(--pc)) !important;
+@media (min-width: 1024px) {
+  :deep(.fc) { font-size: 0.875rem; }
+  :deep(.fc-toolbar-title) { font-size: 1.125rem !important; }
 }
 
 @media (max-width: 767px) {
-  :deep(.fc-toolbar) {
-    @apply flex-col;
-  }
-
-  :deep(.fc-toolbar-chunk) {
-    @apply flex justify-center;
-  }
+  :deep(.fc-toolbar) { flex-direction: column; }
+  :deep(.fc-toolbar-chunk) { display: flex; justify-content: center; }
 }
 </style>
