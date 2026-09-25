@@ -7,7 +7,8 @@ export default defineNuxtPlugin(() => {
     apiUrl: useRuntimeConfig().public.analyticsUrl,
     projectId: 'salatak',
     autoTrack: true,
-    debug: true
+    debug: true,
+    trackingToken: "siraaj_trk_hHEjN9y7SNXAU7g9AKKMwQqfktID5W4w4lwIYTc2pV0"
   });
   return {
     provide: {
