@@ -213,6 +213,24 @@ export default defineI18nConfig(() => ({
       "Recommended": "Recommended",
       "more": "more",
       "List": "List",
+
+      // Step-by-step flow
+      "Timing": "Timing",
+      "Calendar": "Calendar",
+      "Where are you?": "Where are you?",
+      "How should times be calculated?": "How should times be calculated?",
+      "Which prayers do you want?": "Which prayers do you want?",
+      "Your calendar is ready": "Your calendar is ready",
+      "step_location_hint": "We use your location to calculate accurate prayer times.",
+      "step_timing_hint": "The defaults work for most people. Pick the method used in your country if you know it.",
+      "step_prayers_hint": "Choose which prayers to add, and adjust their duration and reminders if you like.",
+      "step_calendar_hint": "Download the file, or copy the calendar link to subscribe so it stays up to date.",
+      "Set your location to continue": "Set your location to continue",
+      "failed_to_copy": "Failed to copy",
+      "How was your experience?": "How was your experience?",
+      "Tell us more (optional)": "Tell us more (optional)",
+      "Send Feedback": "Send Feedback",
+      "Thanks for your feedback!": "Thanks for your feedback!",
     },
     ar: {
       "welcome": "اهلا",
@@ -425,6 +443,24 @@ export default defineI18nConfig(() => ({
       "minutes": "دقائق",
       "more": "المزيد",
       "List": "قائمة",
+
+      // Step-by-step flow
+      "Timing": "المواقيت",
+      "Calendar": "التقويم",
+      "Where are you?": "أين أنت؟",
+      "How should times be calculated?": "كيف تُحسب المواقيت؟",
+      "Which prayers do you want?": "ما الصلوات التي تريدها؟",
+      "Your calendar is ready": "تقويمك جاهز",
+      "step_location_hint": "نستخدم موقعك لحساب مواقيت الصلاة بدقة.",
+      "step_timing_hint": "الإعدادات الافتراضية تناسب معظم الناس. اختر الطريقة المعتمدة في بلدك إن كنت تعرفها.",
+      "step_prayers_hint": "اختر الصلوات التي تريد إضافتها، وعدّل مدتها والتذكير إن أردت.",
+      "step_calendar_hint": "حمّل الملف، أو انسخ رابط التقويم للاشتراك فيه ليبقى محدثاً دائماً.",
+      "Set your location to continue": "حدد موقعك للمتابعة",
+      "failed_to_copy": "فشل النسخ",
+      "How was your experience?": "كيف كانت تجربتك؟",
+      "Tell us more (optional)": "أخبرنا المزيد (اختياري)",
+      "Send Feedback": "إرسال الملاحظات",
+      "Thanks for your feedback!": "شكراً على ملاحظاتك!",
     }
   }
 }))

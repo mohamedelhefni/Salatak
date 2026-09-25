@@ -272,8 +272,15 @@ export const usePrayersStore = defineStore('prayers', {
         asrMethod: this.asrMethod
       })
       this.loading = true
-      await service.getPrayersTimings()
-      this.loading = false
+      try {
+        await service.getPrayersTimings()
+      } catch (e) {
+        console.error('Failed to load prayer timings:', e)
+        alert("Couldn't load prayer times. Please check your connection and try again.")
+        return
+      } finally {
+        this.loading = false
+      }
 
       const selectedPrayers = this.prayers.filter(p => p.checked && p.name !== 'Jummah').map(p => p.name).join(',');
       const durationParams = this.prayers
