@@ -25,6 +25,11 @@ interface State {
   asrMethod: number
 }
 
+const showError = (message: string) => {
+  const { $i18n } = useNuxtApp()
+  useToast().add({ title: $i18n.t(message), color: 'error', icon: 'i-lucide-circle-alert' })
+}
+
 const mapEventDateToICSDate = (date: any) => {
   const inputDate = new Date(date);
   const formattedDate = format(inputDate, 'yyyy-M-d-H-m');
@@ -229,7 +234,7 @@ export const usePrayersStore = defineStore('prayers', {
     setStartDate(date: any) {
       const d = new Date(date);
       if (isNaN(d.getTime())) {
-        alert("Invalid start date");
+        showError("Invalid start date");
         return;
       }
       this.startDate = d;
@@ -237,7 +242,7 @@ export const usePrayersStore = defineStore('prayers', {
     setEndDate(date: any) {
       const d = new Date(date);
       if (isNaN(d.getTime())) {
-        alert("Invalid end date");
+        showError("Invalid end date");
         return;
       }
       this.endDate = d;
@@ -260,7 +265,7 @@ export const usePrayersStore = defineStore('prayers', {
       }
 
       if (this.location.lat == undefined || this.location.long == undefined) {
-        alert("you must enter valid address")
+        showError("you must enter valid address")
         return
       }
 
@@ -276,7 +281,7 @@ export const usePrayersStore = defineStore('prayers', {
         await service.getPrayersTimings()
       } catch (e) {
         console.error('Failed to load prayer timings:', e)
-        alert("Couldn't load prayer times. Please check your connection and try again.")
+        showError("Couldn't load prayer times. Please check your connection and try again.")
         return
       } finally {
         this.loading = false
@@ -329,7 +334,7 @@ export const usePrayersStore = defineStore('prayers', {
           this.reverseGeocoding()
         });
       } else {
-        alert("Geolocation is not supported by this browser.")
+        showError("Geolocation is not supported by this browser.")
       }
     },
     async downloadCalendar() {

@@ -1,25 +1,47 @@
 <script setup lang="ts">
-import { useUiStore } from '~/stores/uiStore';
-const uiStore = useUiStore()
+const colorMode = useColorMode()
+const { locale, setLocale } = useI18n()
 
+const isDark = computed(() => colorMode.value === 'dark')
+const toggleTheme = () => { colorMode.preference = isDark.value ? 'light' : 'dark' }
+const toggleLocale = () => setLocale(locale.value === 'ar' ? 'en' : 'ar')
 </script>
+
 <template>
-  <div class="navbar bg-base-300 px-10">
-    <div class="flex-1">
-      <a class="btn btn-ghost normal-case text-xl">🕋 <span class="mt-1">{{ $t("salatak") }}</span></a>
-    </div>
-    <div class="flex items-center gap-3 ">
-      <div class="">
-        <NuxtLink to="/en" v-if="$i18n.locale == 'ar'">English</NuxtLink>
-        <NuxtLink to="/ar" v-else>ع</NuxtLink>
+  <header class="sticky top-0 z-40 border-b border-default bg-default/80 backdrop-blur">
+    <div class="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
+      <span class="flex items-center gap-2 text-lg font-semibold">
+        <span aria-hidden="true">🕋</span>
+        {{ $t("salatak") }}
+      </span>
+      <div class="flex items-center gap-1">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          :label="locale === 'ar' ? 'English' : 'العربية'"
+          @click="toggleLocale"
+        />
+        <ClientOnly>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
+            :aria-label="isDark ? 'Light mode' : 'Dark mode'"
+            @click="toggleTheme"
+          />
+          <template #fallback>
+            <div class="size-8" />
+          </template>
+        </ClientOnly>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-simple-icons-github"
+          to="https://github.com/mohamedelhefni/salatak"
+          target="_blank"
+          aria-label="GitHub"
+        />
       </div>
-      <button class="btn btn-ghost btn-circle" @click="uiStore.toggleTheme()">
-        <IconsSun v-if="uiStore.theme == 'dark'" class="w-6 h-6" />
-        <IconsMoon v-else class="w-6 h-6" />
-      </button>
-      <NuxtLink href="https://github.com/mohamedelhefni/salatak" target="_blank">
-        <IconsGithub class="w-6 h-6 " :class="{ 'fill-white': uiStore.theme == 'dark' }" />
-      </NuxtLink>
     </div>
-  </div>
+  </header>
 </template>
