@@ -93,14 +93,22 @@ watch([timings, prayers], () => {
 }, { deep: true })
 
 
+// First click on the preview (any part of the calendar) is a survey trigger; later clicks are noise.
+let previewClicked = false
+const onPreviewClick = () => {
+  if (previewClicked) return
+  previewClicked = true
+  useAnalytics().trackCalendarPreviewClick()
+}
+
 const copyToClipboard = () => {
   if (navigator.clipboard) {
     navigator.clipboard
       .writeText(subscribeURL.value)
       .then(() => {
         toast.add({ title: t('text_copied_to_clipboard'), color: 'success', icon: 'i-lucide-check' });
-        // Track copy URL event for PostHog survey trigger
-        const { trackUrlCopy } = usePostHog()
+        // Track copy URL event for Siraaj survey trigger
+        const { trackUrlCopy } = useAnalytics()
         trackUrlCopy()
       })
       .catch((error) => {
@@ -115,8 +123,8 @@ const copyToClipboard = () => {
     try {
       document.execCommand('copy');
       toast.add({ title: t('text_copied_to_clipboard'), color: 'success', icon: 'i-lucide-check' });
-      // Track copy URL event for PostHog survey trigger
-      const { trackUrlCopy } = usePostHog()
+      // Track copy URL event for Siraaj survey trigger
+      const { trackUrlCopy } = useAnalytics()
       trackUrlCopy()
     } catch (error) {
       toast.add({ title: t('failed_to_copy'), color: 'error' });
@@ -149,7 +157,7 @@ const copyToClipboard = () => {
         <UIcon name="i-lucide-calendar-days" class="size-4 text-primary" />
         {{ $t("Calendar Preview") }}
       </h3>
-      <div class="calendar-wrapper overflow-hidden rounded-lg border border-default p-2 sm:p-3">
+      <div class="calendar-wrapper overflow-hidden rounded-lg border border-default p-2 sm:p-3" @click="onPreviewClick">
         <FullCalendar ref="calendarRef" :options="calendarOptions" />
       </div>
     </div>

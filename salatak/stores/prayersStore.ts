@@ -317,8 +317,8 @@ export const usePrayersStore = defineStore('prayers', {
 
       this.subscribeURL = `${window.location.origin}/api/prayer-calendar?lat=${this.location.lat}&long=${this.location.long}&${dateParams}&${durationParams}&${offsetParams}&${alarmParams}${jummahParams}&calcMethod=${this.calcMethod}&asrMethod=${this.asrMethod}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}&selectedPrayers=${selectedPrayers}`
       this.timings = service.timings
-      // Track calendar preview view for PostHog survey trigger
-      const { trackCalendarPreview } = usePostHog()
+      // Track calendar preview view for Siraaj survey trigger
+      const { trackCalendarPreview } = useAnalytics()
       trackCalendarPreview()
     },
     async reverseGeocoding() {
@@ -373,8 +373,8 @@ export const usePrayersStore = defineStore('prayers', {
       document.body.removeChild(anchor);
       URL.revokeObjectURL(url);
 
-      // Track download event for PostHog survey trigger
-      const { trackCalendarDownload } = usePostHog()
+      // Track download event for Siraaj survey trigger
+      const { trackCalendarDownload } = useAnalytics()
       trackCalendarDownload()
     },
     mapTimingsToEvents(months: any[], t: any) {

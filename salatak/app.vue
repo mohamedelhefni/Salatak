@@ -11,9 +11,9 @@ useHead({
   }
 })
 
-// Identify user on app mount for PostHog tracking
+// Identify user on app mount for Siraaj tracking
 onMounted(() => {
-  const { identifyUser } = usePostHog()
+  const { identifyUser } = useAnalytics()
   identifyUser()
 })
 </script>

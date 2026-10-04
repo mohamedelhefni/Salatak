@@ -36,7 +36,7 @@ const goTo = (i: number) => {
 }
 
 watch(current, (i) => {
-  usePostHog().trackStep(steps[i].key, i + 1)
+  useAnalytics().trackStep(steps[i].key, i + 1)
   if (steps[i].key === 'calendar') getPrayersTimings()
   window.scrollTo({ top: 0, behavior: 'smooth' })
 })
@@ -73,7 +73,7 @@ const updateEndDate = (event: any) => {
 onMounted(() => {
   setLoading(false) // loading is persisted; clear a stale spinner from a previous visit
   prayersStore.fetchPrayerCalcMethods()
-  usePostHog().trackStep(steps[0].key, 1)
+  useAnalytics().trackStep(steps[0].key, 1)
 })
 </script>
 
