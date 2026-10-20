@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      analyticsUrl: 'https://siraaj.live',
+      analyticsUrl: 'https://analytics.hefni101.dev',
     }
   },
   devtools: { enabled: true },
