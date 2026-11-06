@@ -1,2 +1,14 @@
 [build.environment]
   NITRO_PRESET = "netlify"
+
+[[redirects]]
+  from = "https://salatak.netlify.app/*"
+  to = "https://salatak.online/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://salatak.hefni101.dev/*"
+  to = "https://salatak.online/:splat"
+  status = 301
+  force = true
