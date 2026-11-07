@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { createEvents } from 'ics';
-import { format } from 'date-fns'
 import { type AddressLocaiton, PrayerTimingsService } from '~/services/PrayerTimeingsService';
 
 interface PrayerCalcMethod {
@@ -31,10 +30,8 @@ const showError = (message: string) => {
 }
 
 const mapEventDateToICSDate = (date: any) => {
-  const inputDate = new Date(date);
-  const formattedDate = format(inputDate, 'yyyy-M-d-H-m');
-  const formattedDateArray = formattedDate.split('-').map(d => Number(d));
-  return formattedDateArray
+  const d = new Date(date);
+  return [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes()]
 }
 
 export const usePrayersStore = defineStore('prayers', {
