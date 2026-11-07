@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "salatak",
+  "main": "./.output/server/index.mjs",
+  "assets": { "directory": "./.output/public", "binding": "ASSETS" },
+  "compatibility_date": "2026-09-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "salatak.online", "custom_domain": true },
+    { "pattern": "www.salatak.online", "custom_domain": true }
+  ]
+}
