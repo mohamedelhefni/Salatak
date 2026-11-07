@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Salatak">
+  <!-- Mizan AppIcon, light tone: white tile, black glyph (the Kaaba) -->
+  <rect x=".75" y=".75" width="98.5" height="98.5" rx="22" fill="#ffffff" stroke="#e5e5e5" stroke-width="1.5"/>
+  <g transform="translate(0 -4)" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round">
+    <!-- Kaaba: top, side, front -->
+    <path fill="#525252" d="M18 34 42 24h40L58 34z"/>
+    <path fill="#262626" d="M58 34 82 24v50L58 84z"/>
+    <path fill="#0a0a0a" d="M18 34h40v50H18z"/>
+    <!-- kiswa band (hizam) -->
+    <path fill="#ffffff" stroke="none" d="M18 43h40l24-10v5L58 48H18z"/>
+    <!-- raised door -->
+    <rect x="27" y="58" width="11" height="17" rx="1.5" fill="#d4d4d4" stroke="none"/>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+{
+  "name": "صلاتك · Salatak — Prayer Times Calendar",
+  "short_name": "Salatak",
+  "description": "Add accurate prayer times for your city to Google Calendar, Apple Calendar or Outlook, with reminders.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

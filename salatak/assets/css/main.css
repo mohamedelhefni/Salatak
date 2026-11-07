@@ -1,9 +1,56 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* Thmanyah — 3 families × 5 weights, per Mizan */
+@font-face { font-family: "Thmanyah Sans"; src: url(/fonts/thmanyahsans-Light.woff2) format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url(/fonts/thmanyahsans-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url(/fonts/thmanyahsans-Medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url(/fonts/thmanyahsans-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url(/fonts/thmanyahsans-Black.woff2) format("woff2"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Display"; src: url(/fonts/thmanyahserifdisplay-Light.woff2) format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Display"; src: url(/fonts/thmanyahserifdisplay-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Display"; src: url(/fonts/thmanyahserifdisplay-Medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Display"; src: url(/fonts/thmanyahserifdisplay-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Display"; src: url(/fonts/thmanyahserifdisplay-Black.woff2) format("woff2"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Text"; src: url(/fonts/thmanyahseriftext-Light.woff2) format("woff2"); font-weight: 300; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Text"; src: url(/fonts/thmanyahseriftext-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Text"; src: url(/fonts/thmanyahseriftext-Medium.woff2) format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Text"; src: url(/fonts/thmanyahseriftext-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Thmanyah Serif Text"; src: url(/fonts/thmanyahseriftext-Black.woff2) format("woff2"); font-weight: 900; font-display: swap; }
+
 @theme static {
-  --font-sans: 'Inter', 'Noto Sans Arabic', sans-serif;
+  --font-sans: "Thmanyah Sans", Almarai, Tahoma, system-ui, sans-serif;
+  --font-head: "Thmanyah Serif Display", "Noto Naskh Arabic", Georgia, serif;
+  --font-text: "Thmanyah Serif Text", "Noto Naskh Arabic", Georgia, serif;
 }
+
+/* Mizan tokens mapped onto Nuxt UI: black/white/greys, black action colour */
+:root {
+  --ui-primary: #0a0a0a;
+  --ui-bg: #ffffff;
+  --ui-bg-elevated: #f5f5f5;
+  --ui-bg-accented: #ededed;
+  --ui-border: #e5e5e5;
+  --ui-border-accented: #8a8a8a;
+  --ui-text: #0a0a0a;
+  --ui-text-highlighted: #0a0a0a;
+  --ui-text-muted: #595959;
+  --ui-radius: 0.5rem; /* md 12px buttons/fields, lg 16px cards, xl 24px sheets */
+}
+.dark {
+  --ui-primary: #fafafa;
+  --ui-bg: #0a0a0a;
+  --ui-bg-elevated: #141414;
+  --ui-bg-accented: #262626;
+  --ui-border: #262626;
+  --ui-border-accented: #737373;
+  --ui-text: #fafafa;
+  --ui-text-highlighted: #fafafa;
+  --ui-text-muted: #a3a3a3;
+}
+
+body { font-variant-numeric: tabular-nums; }
+h1, h2, h3 { font-family: var(--font-head); }
 
 /* iOS zooms into inputs smaller than 16px */
 @media (max-width: 639px) {

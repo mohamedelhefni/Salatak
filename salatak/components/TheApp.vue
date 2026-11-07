@@ -80,7 +80,7 @@ onMounted(() => {
 <template>
   <div class="mx-auto w-full max-w-3xl px-4 py-6 sm:py-10">
     <header class="mb-6 text-center sm:mb-8">
-      <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">{{ $t("salatak") }}</h1>
+      <h1 class="text-2xl font-bold sm:text-3xl">{{ $t("salatak") }}</h1>
       <p class="mt-1 text-sm text-muted sm:text-base">{{ $t("schedule_prayers") }}</p>
     </header>
 

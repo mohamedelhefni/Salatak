@@ -24,6 +24,7 @@ onMounted(() => {
       <Navbar />
       <main class="flex-1">
         <TheApp />
+        <Faq />
       </main>
     </div>
   </UApp>

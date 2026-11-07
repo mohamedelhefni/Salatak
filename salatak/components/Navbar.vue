@@ -10,8 +10,8 @@ const toggleLocale = () => setLocale(locale.value === 'ar' ? 'en' : 'ar')
 <template>
   <header class="sticky top-0 z-40 border-b border-default bg-default/80 backdrop-blur">
     <div class="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-      <span class="flex items-center gap-2 text-lg font-semibold">
-        <span aria-hidden="true">🕋</span>
+      <span class="flex items-center gap-2 font-head text-lg font-medium">
+        <img src="/logo.svg" alt="" class="size-9">
         {{ $t("salatak") }}
       </span>
       <div class="flex items-center gap-1">

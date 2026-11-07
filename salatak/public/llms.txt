@@ -1,0 +1,15 @@
+# Salatak (صلاتك)
+
+> Salatak is a free, open-source web app at https://salatak.online that adds accurate Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha, and Jumu'ah) for any location to Google Calendar, Apple Calendar or Microsoft Outlook, with reminders. Available in English and Arabic. No account needed.
+
+## How it works
+1. Pick your location (search or map).
+2. Choose a calculation method (e.g. Egyptian General Authority, Muslim World League, Umm al-Qura) and Asr school (Shafi or Hanafi).
+3. Choose the prayers, durations, offsets and reminders (up to 60 minutes before).
+4. Download an .ics file or subscribe with a calendar link.
+
+Prayer times come from the AlAdhan API, calculated for the user's coordinates.
+
+## Links
+- App: https://salatak.online/
+- Source: https://github.com/mohamedelhefni/Salatak
